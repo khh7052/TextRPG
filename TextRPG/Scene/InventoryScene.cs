@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using TextRPG.Manager;
+using TextRPG.MenuCollections;
 
 namespace TextRPG.Scene
 {

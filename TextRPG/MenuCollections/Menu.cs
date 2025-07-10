@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TextRPG
+namespace TextRPG.MenuCollections
 {
     internal class Menu
     {
@@ -15,7 +15,7 @@ namespace TextRPG
         public ConsoleColor Color { get; set; } = ConsoleColor.White; // 메뉴 출력 시 사용할 색상
         public bool Enable { get; set; } = true; // 메뉴 활성화 여부
 
-        public Menu() 
+        public Menu()
         {
             Content = "기본 메뉴"; // 기본 메뉴 내용 설정
             Color = ConsoleColor.White; // 기본 색상은 흰색

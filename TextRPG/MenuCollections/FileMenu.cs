@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TextRPG.Manager;
 
-namespace TextRPG
+namespace TextRPG.MenuCollections
 {
     internal class FileMenu : Menu
     {
@@ -47,7 +47,7 @@ namespace TextRPG
         public void Save()
         {
 
-           if (_saveFile == null) return;
+            if (_saveFile == null) return;
 
             // 저장 로직 구현
             SaveManager.Instance.Save(_saveFile);

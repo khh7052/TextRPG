@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using TextRPG.Manager;
 
-namespace TextRPG
+namespace TextRPG.MenuCollections
 {
     internal class ToggleItemMenu : Menu
     {
         public Item Item { get; set; } // 토글할 아이템
 
-        public ToggleItemMenu(Item item, ConsoleColor color, Action onSelect = null) : base(GetEquipMenuItemInfo(item), color, onSelect)
+        public ToggleItemMenu(Item item, ConsoleColor color, Action onSelect = null) : base(GetItemInfo(item), color, onSelect)
         {
             Item = item; // 아이템 설정
-            if(OnSelect == null)
+            if (OnSelect == null)
                 OnSelect = () => ToggleItem(); // 기본 액션은 아이템 토글로 설정
         }
 
@@ -35,7 +35,7 @@ namespace TextRPG
                 {
                     Console.BackgroundColor = ConsoleColor.Black; // 선택되지 않은 메뉴는 검은색 배경으로 표시
 
-                    if(Item == null)
+                    if (Item == null)
                         Console.ForegroundColor = Color; // 기본 색상 사용
                     else
                     {
@@ -48,7 +48,7 @@ namespace TextRPG
             }
 
             // 메뉴 내용 출력
-            Content = GetEquipMenuItemInfo(Item); // 메뉴 내용 설정
+            Content = GetItemInfo(Item); // 메뉴 내용 설정
             string content = isSelected ? $"▶   {Content}" : Content;
             Console.WriteLine(content); // 메뉴 내용 출력
             Console.ResetColor(); // 색상 초기화
@@ -71,7 +71,7 @@ namespace TextRPG
                 GameManager.DisplayMessage($"{Item.Name} 아이템을 장착했습니다.");
             }
         }
-        public static string GetEquipMenuItemInfo(Item item)
+        public static string GetItemInfo(Item item)
         {
             if (item == null) return "                   ";
 
@@ -83,15 +83,6 @@ namespace TextRPG
             return $"{name}| {effect}| {description}";
         }
 
-
-        /*
-        public static string GetEquipMenuItemInfo(Item item)
-        {
-            if (item == null) return "               ";
-
-            return $"{item.Name} | {Item.GetItemTypeEffectText(item.Type)} +{item.EffectValue} | {item.Description}";
-        }
-        */
 
     }
 }

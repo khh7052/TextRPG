@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TextRPG.Manager;
+using TextRPG.MenuCollections;
 using static TextRPG.Scene.ShopScene;
 
 namespace TextRPG.Scene
