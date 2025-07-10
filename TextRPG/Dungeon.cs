@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TextRPG.Manager;
 
 namespace TextRPG
 {
@@ -33,6 +34,25 @@ namespace TextRPG
             RewardGold = rewardGold;
             Monsters = monsters;
             RecommendedDefense = recommendedDefense;
+        }
+
+
+        public int GetDungeonPenalty_HP()
+        {
+            Random random = new();
+            int penalty = random.Next(20, 36); // 20 ~ 35
+            penalty -= (int)GameManager.Player.DEF - RecommendedDefense; // 방어력에 따라 감소
+            if (penalty < 0) penalty = 0; // 최소 0으로 설정
+            return penalty;
+        }
+
+        public int GetDungeonPlusReward_Gold()
+        {
+            float atk = GameManager.Player.ATK;
+            Random random = new();
+            float percent = random.Next((int)atk, (int)atk * 2) * 0.01f;
+
+            return RewardGold + (int)(RewardGold * percent);
         }
     }
 }

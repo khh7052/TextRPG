@@ -11,7 +11,7 @@ namespace TextRPG.Scene
     {
         public StartScene()
         {
-            Name = "⚔️  던전 입구";
+            Name = "⚔️ 𝔻𝕒𝕣𝕜 𝕃𝕠𝕣𝕕𝕤: 𝕋𝕖𝕩𝕥 ℝℙ𝔾 𝔸𝕕𝕧𝕖𝕟𝕥𝕦𝕣𝕖 ⚔️ ";
             Description = "던전 입구에 무사히 오신것을 환영합니다.\n이곳에서 던전으로 들어가기전 재정비를 할 수 있습니다.";
 
             SelectMenus.Add(new("ℹ️ 상태 보기", ConsoleColor.Cyan, ()=> SceneManager.ChangeScene(SceneType.STATUS)));

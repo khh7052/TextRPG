@@ -1,205 +1,177 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using TextRPG.Manager;
-using static TextRPG.Scene.ShopScene;
+using TextRPG.MenuCollections;
 
 namespace TextRPG.Scene
 {
     internal class DungeonScene : SceneBase
     {
-        public enum DungeonMenu
+        public enum DungeonMenuType
         {
             LOBBY, // 로비
             CLEAR, // 던전 성공
             FAIL, // 던전 실패
         }
 
-        public DungeonMenu Menu { get; set; } = DungeonMenu.LOBBY; // 현재 메뉴 상태
+        public DungeonMenuType MenuType { get; set; } = DungeonMenuType.LOBBY; // 현재 메뉴 상태
 
         public Dungeon CurrentDungeon { get; set; } // 현재 선택된 던전
 
+        private bool _hasExploredDungeon = false; // 던전 탐험 여부
+
+        private ExploredData _exploredData; // 던전 탐험 데이터 저장
+
+        // 던전 탐험 데이터 구조체
+        public struct ExploredData
+        {
+            public float previousHP; // 던전 탐험 전 체력
+            public float currentHP; // 던전 탐험 후 체력
+            public int previousGold; // 던전 탐험 전 골드
+            public int currentGold; // 던전 탐험 후 골드
+            public int previousExperience; // 던전 탐험 전 경험치
+            public int currentExperience; // 경험치
+        }
+
+
         public DungeonScene()
         {
-            Name = "던전";
+            Name = "⚔️ 던전";
             Description = "던전을 탐험하며 몬스터와 싸우고 보물을 찾을 수 있습니다.";
+
+
+            SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () =>
+            {
+                if(MenuType == DungeonMenuType.LOBBY)
+                    SceneManager.ChangeScene(SceneType.START);
+                else
+                    MenuType = DungeonMenuType.LOBBY; // 로비로 돌아가기
+            }));
+
+            // 던전 목록을 표시하기 위한 메뉴 추가
+            for (int i = 0; i < DungeonManager.Instance.Dungeons.Count; i++)
+            {
+                Dungeon dungeon = DungeonManager.Instance.Dungeons[i];
+                DungeonMenu dungeonMenu = new DungeonMenu(this, dungeon);
+                ItemMenus.Add(dungeonMenu);
+            }
+
         }
 
         public override void MainDisplay()
         {
-            switch (Menu)
+            switch (MenuType)
             {
-                case DungeonMenu.LOBBY:
-                    MainDisplay_Lobby();
+                case DungeonMenuType.LOBBY:
+                    ItemMenuDisplay();
                     break;
-                case DungeonMenu.CLEAR:
+                case DungeonMenuType.CLEAR:
                     MainDisplay_Clear();
                     break;
-                case DungeonMenu.FAIL:
+                case DungeonMenuType.FAIL:
                     MainDisplay_Fail();
                     break;
             }
         }
 
-        public override void SelectMenu(int selection)
-        {
-            switch (Menu)
-            {
-                case DungeonMenu.LOBBY:
-                    SelectMenu_Lobby(selection);
-                    break;
-                case DungeonMenu.CLEAR:
-                    SelectMenu_Clear(selection);
-                    break;
-                case DungeonMenu.FAIL:
-                    SelectMenu_Fail(selection);
-                    break;
-            }
-        }
-
-
         public override void Init()
         {
-            switch (Menu)
+            switch (MenuType)
             {
-                case DungeonMenu.LOBBY:
-                    Name = "던전입장";
-                    Description = "여기서 던전을 선택하고 탐험을 시작할 수 있습니다.";
+                case DungeonMenuType.LOBBY:
+                    Name = "⚔️ 던전";
+                    Description = "던전을 탐험하며 몬스터와 싸우고 보물을 찾을 수 있습니다.";
+
+                    foreach (var menu in ItemMenus)
+                        menu.Enable = true;
                     break;
-                case DungeonMenu.CLEAR:
-                    Name = "던전 - 탐사 성공";
+                case DungeonMenuType.CLEAR:
+                    Name = "⚔️ 던전 - 탐사 성공";
                     Description = $"{CurrentDungeon.Name} 탐사를 성공하였습니다.";
+
+                    foreach (var menu in ItemMenus)
+                        menu.Enable = false;
                     break;
-                case DungeonMenu.FAIL:
-                    Name = $"던전 - 탐사 실패";
+                case DungeonMenuType.FAIL:
+                    Name = $"⚔️ 던전 - 탐사 실패";
                     Description = $"{CurrentDungeon.Name} 탐사를 실패하였습니다...";
+
+                    foreach (var menu in ItemMenus)
+                        menu.Enable = false;
                     break;
             }
         }
 
-
-        public void MainDisplay_Lobby()
+        public void ExploreDungeon(Dungeon dungeon)
         {
-            Console.WriteLine("[던전 목록]");
-            DungeonManager.Instance.DisplayDungeonList();
-            Console.WriteLine();
-            Console.WriteLine("0. 나가기");
+            _hasExploredDungeon = false;
+            Character player = GameManager.Player;
+            CurrentDungeon = dungeon;
+
+            if (player.DEF < CurrentDungeon.RecommendedDefense)
+            {
+                Random random = new();
+                int clearRand = random.Next(1, 101); // 1부터 100까지의 랜덤 숫자 생성
+                MenuType = clearRand <= 40 ? DungeonMenuType.FAIL : DungeonMenuType.CLEAR; // 40% 확률로 실패, 나머지 60% 확률로 성공
+            }
+            else
+            {
+                MenuType = DungeonMenuType.CLEAR; // 성공
+            }
         }
 
         public void MainDisplay_Clear()
         {
             Character player = GameManager.Player;
+            if (!_hasExploredDungeon)
+            {
+                float penaltyHP = CurrentDungeon.GetDungeonPenalty_HP();
+                int reward = CurrentDungeon.GetDungeonPlusReward_Gold(); // 골드 보상 추가
 
-            float penaltyHP = GetDungeonPenalty_HP();
-            int reward = GetDungeonPlusReward_Gold(); // 골드 보상 추가
+                _exploredData = new ExploredData();
+                _exploredData.previousHP = player.HP; // 탐험 전 체력
+                _exploredData.currentHP = player.HP - penaltyHP; // 탐험 후 체력
+                _exploredData.previousGold = player.Gold; // 탐험 전 골드
+                _exploredData.currentGold = player.Gold + reward; // 탐험 후 골드
+                _exploredData.previousExperience = player.Experience; // 탐험 전 경험치
+                _exploredData.currentExperience = player.Experience + 1; // 탐험 후 경험치 증가
+
+                player.HP = (int)_exploredData.currentHP; // 체력 업데이트
+                player.Gold = _exploredData.currentGold; // 골드 업데이트
+                player.Experience = _exploredData.currentExperience; // 경험치 업데이트
+
+                _hasExploredDungeon = true;
+            }
 
             Console.WriteLine("[탐험 결과]");
-            Console.WriteLine($"체력 {player.HP} -> {player.HP - penaltyHP}");
-            Console.WriteLine($"Gold {player.Gold} G -> {player.Gold + reward} G");
-            Console.WriteLine("0. 나가기");
-
-            player.HP -= penaltyHP; // 체력 감소
-            player.Gold += reward; // 골드 추가
-            player.Experience++; // 경험치 증가
+            Console.WriteLine($"체력 {_exploredData.previousHP} -> {_exploredData.currentHP}");
+            Console.WriteLine($"Gold {_exploredData.previousGold} G -> {_exploredData.currentGold} G");
         }
 
         public void MainDisplay_Fail()
         {
-            Console.WriteLine("[탐험 결과]");
-            Console.WriteLine($"체력 {GameManager.Player.HP} -> {GameManager.Player.HP * 0.5f}");
-            GameManager.Player.HP = (int)(GameManager.Player.HP * 0.5f); // 체력 50% 감소
-            Console.WriteLine("0. 나가기");
-        }
-
-        public void SelectMenu_Lobby(int selection)
-        {
-
-            if (selection == 0)
-            {
-                SceneManager.ChangeScene(SceneType.START); // 시작 씬으로 돌아가기
-                return;
-            }
-
-            // 입력 확인
-            if (selection < 1 || selection > DungeonManager.Instance.Dungeons.Count)
-            {
-                GameManager.DisplayWarning("잘못된 입력입니다. 주어진 선택지를 입력해주세요.");
-                return;
-            }
-
-            CurrentDungeon = DungeonManager.Instance.Dungeons[selection - 1];
-            ExploreDungeon(); // 던전 탐험 시작
-        }
-
-        public void SelectMenu_Clear(int selection)
-        {
-            switch (selection)
-            {
-                case 0:
-                    Menu = DungeonMenu.LOBBY; // 로비로 돌아가기
-                    break;
-                default:
-                    GameManager.DisplayWarning("잘못된 입력입니다. 주어진 선택지를 입력해주세요.");
-                    break;
-            }
-        }
-
-        public void SelectMenu_Fail(int selection)
-        {
-            switch (selection)
-            {
-                case 0:
-                    Menu = DungeonMenu.LOBBY; // 로비로 돌아가기
-                    break;
-                default:
-                    GameManager.DisplayWarning("잘못된 입력입니다. 주어진 선택지를 입력해주세요.");
-                    break;
-            }
-        }
-
-        // 던전 탐험 시작
-        public void ExploreDungeon()
-        {
             Character player = GameManager.Player;
-
-            if(player.DEF < CurrentDungeon.RecommendedDefense)
+            if (!_hasExploredDungeon)
             {
-                Random random = new();
-                int clearRand = random.Next(1, 101); // 1부터 100까지의 랜덤 숫자 생성
-                Menu = clearRand <= 40 ? DungeonMenu.FAIL : DungeonMenu.CLEAR; // 40% 확률로 실패, 나머지 60% 확률로 성공
+                _exploredData = new ExploredData();
+                _exploredData.previousHP = player.HP; // 탐험 전 체력
+                _exploredData.currentHP = player.HP * 0.5f; // 탐험 후 체력 50% 감소
+                _exploredData.previousGold = player.Gold; // 탐험 전 골드
+                _exploredData.currentGold = player.Gold; // 탐험 후 골드
+                _exploredData.previousExperience = player.Experience; // 탐험 전 경험치
+                _exploredData.currentExperience = player.Experience; // 탐험 후 경험치 증가
+
+                _hasExploredDungeon = true;
             }
-            else
-            {
-                Menu = DungeonMenu.CLEAR; // 성공
-            }
-        }
 
-        int GetDungeonPenalty_HP()
-        {
-            Random random = new();
-            int penalty = random.Next(20, 36); // 20 ~ 35
-            penalty -= (int)GameManager.Player.DEF - CurrentDungeon.RecommendedDefense; // 방어력에 따라 감소
-            if (penalty < 0) penalty = 0; // 최소 0으로 설정
-            return penalty;
-        }
 
-        int GetDungeonPlusReward_Gold()
-        {
-            float atk = GameManager.Player.ATK;
-            Random random = new();
-            float percent = random.Next((int)atk, (int)atk * 2) * 0.01f;
-
-            return CurrentDungeon.RewardGold + (int)(CurrentDungeon.RewardGold * percent);
-        }
-
-        // 던전 클리어
-        public void ClearDungeon()
-        {
-            // 보상 로직 추가
-            GameManager.Player.LevelUp();
-            Menu = DungeonMenu.LOBBY; // 로비로 돌아가기
+            Console.WriteLine("[탐험 결과]");
+            Console.WriteLine($"체력 {_exploredData.previousHP} -> {_exploredData.currentHP}");
+            player.HP = _exploredData.currentHP;
         }
     }
 }
