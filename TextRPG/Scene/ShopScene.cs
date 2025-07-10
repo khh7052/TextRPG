@@ -26,62 +26,95 @@ namespace TextRPG.Scene
             Shop = new("상점", "아이템을 구매하거나 판매할 수 있는 곳입니다.");
             Name = Shop.Name;
             Description = Shop.Description;
+
+            SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () => SceneManager.ChangeScene(SceneType.START)));
+            SelectMenus.Add(new Menu("🛒 아이템 구매", ConsoleColor.Cyan, () => Menu = ShopMenu.BUY));
+            SelectMenus.Add(new Menu("💵 아이템 판매", ConsoleColor.Cyan, () => Menu = ShopMenu.SELL));
+
+            for (int i = 0; i < 10; i++)
+            {
+                ItemMenus.Add(new ToggleItemMenu(null, ConsoleColor.Cyan));
+            }
         }
 
         public override void Init()
         {
-            switch(Menu)
+            switch (Menu)
             {
                 case ShopMenu.LOBBY:
                     Name = Shop.Name;
+                    Description = Shop.Description;
                     break;
                 case ShopMenu.BUY:
                     Name = Shop.Name + " - 아이템 구매";
+                    Description = "아이템을 구매할 수 있는 화면입니다.";
+
                     break;
                 case ShopMenu.SELL:
                     Name = Shop.Name + " - 아이템 판매";
+                    Description = "아이템을 판매할 수 있는 화면입니다.";
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
+        public override void InfoDisplay(ConsoleColor nameColor = ConsoleColor.DarkYellow, ConsoleColor descriptionColor = ConsoleColor.White)
+        {
+            Console.Clear();
+            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            GameManager.ColorWriteLine($"🛒 {Name}", nameColor);
+            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            Console.WriteLine(Description);
+            Console.WriteLine();
+        }
+
+
+        public override void ItemMenuDisplay()
+        {
+            UpdateItemMenu();
+            Console.WriteLine("───── 보유 장비 ─────");
+            for (int i = 3; i < ItemMenus.Count; i++)
+            {
+                ItemMenus[i].Display();
+            }
+            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            for (int i = 0; i < 3; i++)
+            {
+                ItemMenus[i].Display();
+            }
+        }
+
+        void UpdateItemMenu()
+        {
+            Shop.ShowItemsUpdate();
+
+            if (Shop.ShowItems == null || Shop.ShowItems.Count == 0)
+                return;
+
+            int count = 0;
+            for (int i = 0; i < Shop.ShowItems.Count; i++)
+            {
+                // GameManager.DisplayMessage($"아이템 {i + 1} / {Shop.ShowItems.Count} : {Shop.ShowItems[i].Name}");
+                for (int j = count; j < ItemMenus.Count; j++)
+                {
+                    ToggleItemMenu toggleItemMenu = ItemMenus[j] as ToggleItemMenu;
+
+                    if (toggleItemMenu != null)
+                    {
+                        toggleItemMenu.Item = Shop.ShowItems[i]; // 아이템 설정
+                        // GameManager.DisplayMessage($"아이템 {i + 1} / {toggleItemMenu.Item} : {Shop.ShowItems[i].Name}");
+                        count++;
+                        break;
+                    }
+                }
+            }
+
+        }
 
         public override void MainDisplay()
         {
-            if(Menu == ShopMenu.LOBBY)
-            {
-                Console.WriteLine("[보유 골드]");
-                GameManager.ColorWriteLine($"{GameManager.Player.Gold} G", ConsoleColor.Yellow);
-                Console.WriteLine();
-                Console.WriteLine("[장비 목록]");
-                Shop.DisplayShopItemList(false);
-                Console.WriteLine();
-                Console.WriteLine("1. 아이템 구매");
-                Console.WriteLine("2. 아이템 판매");
-                Console.WriteLine("0. 나가기");
-            }
-            else if (Menu == ShopMenu.BUY)
-            {
-                Console.WriteLine("[보유 골드]");
-                GameManager.ColorWriteLine($"{GameManager.Player.Gold} G", ConsoleColor.Yellow);
-                Console.WriteLine();
-                Console.WriteLine("[장비 목록]");
-                Shop.DisplayShopItemList(true);
-                Console.WriteLine();
-                Console.WriteLine("0. 나가기");
-            }
-            else if (Menu == ShopMenu.SELL)
-            {
-                Console.WriteLine("[보유 골드]");
-                GameManager.ColorWriteLine($"{GameManager.Player.Gold} G", ConsoleColor.Yellow);
-                Console.WriteLine();
-                Console.WriteLine("[장비 목록]");
-                Shop.DisplayInventoryItemList();
-                Console.WriteLine();
-                Console.WriteLine("0. 나가기");
-            }
-
+            Console.WriteLine("[보유 골드]");
+            GameManager.ColorWriteLine($"{GameManager.Player.Gold} G", ConsoleColor.Yellow);
+            Console.WriteLine();
         }
 
         public override void SelectMenu(int selection)
@@ -106,7 +139,7 @@ namespace TextRPG.Scene
             {
                 case 0:
                     // 시작 씬으로 돌아가기
-                    SceneManager.Instance.ChangeScene(SceneType.START);
+                    SceneManager.ChangeScene(SceneType.START);
                     break;
                 case 1:
                     // 아이템 구매 씬으로 전환

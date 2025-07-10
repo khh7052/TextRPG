@@ -17,13 +17,22 @@ namespace TextRPG.Scene
             LOAD,
             DELETE
         }
-
         public SaveMenu Menu { get; set; } = SaveMenu.LOBBY; // 기본값은 로비로 설정
 
         public SaveScene()
         {
             Name = "저장 화면";
             Description = "게임을 저장하거나 불러올 수 있습니다.";
+
+            SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () => SceneManager.ChangeScene(SceneType.START)));
+            SelectMenus.Add(new Menu("💾 저장", ConsoleColor.Cyan, () => Menu = SaveMenu.SAVE));
+            SelectMenus.Add(new Menu("📂 불러오기", ConsoleColor.Cyan, () => Menu = SaveMenu.LOAD));
+            SelectMenus.Add(new Menu("🗑️ 삭제", ConsoleColor.Cyan, () => Menu = SaveMenu.DELETE));
+
+            for (int i = 0; i < SaveManager.Instance.SaveFileLength; i++)
+            {
+                ItemMenus.Add(new FileMenu());
+            }
         }
 
         public override void Init()
@@ -50,6 +59,7 @@ namespace TextRPG.Scene
                     throw new ArgumentOutOfRangeException();
             }
         }
+
 
         public override void MainDisplay()
         {
@@ -94,11 +104,6 @@ namespace TextRPG.Scene
             Console.WriteLine("[파일 목록]");
             SaveManager.Instance.DisplaySaveFiles();
 
-            Console.WriteLine("========================================");
-            Console.WriteLine("1. 저장");
-            Console.WriteLine("2. 불러오기");
-            Console.WriteLine("3. 삭제");
-            Console.WriteLine("0. 나가기");
         }
 
         public void MainDisplay_SLD()
@@ -124,7 +129,7 @@ namespace TextRPG.Scene
                     Menu = SaveMenu.DELETE;
                     break;
                 case 0:
-                    SceneManager.Instance.ChangeScene(SceneType.START);
+                    SceneManager.ChangeScene(SceneType.START);
                     return; // 나가기 선택 시 씬 변경 후 종료
                 default:
                     GameManager.DisplayWarning("잘못된 입력입니다. 주어진 선택지를 입력해주세요.");

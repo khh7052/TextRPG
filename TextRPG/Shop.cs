@@ -20,7 +20,7 @@ namespace TextRPG
         {
             Name = name;
             Description = description;
-            Items = new List<Item>();
+            Items = new();
 
             // 상점에 기본 아이템 추가
             Items.Add(new Item("나무", "기본 나무로 만든 검", 100, 10, ItemType.WEAPON));
@@ -78,6 +78,11 @@ namespace TextRPG
         {
             if (item == null) return 0; // 아이템이 null인 경우 0 반환
             return (int)(item.Price * 0.85f); // 판매 시 아이템 가격의 절반을 반환
+        }
+
+        public void ShowItemsUpdate()
+        {
+            ShowItems = ItemManager.Instance.GetItemRange(Items, 0, 10); // 예시로 10개 아이템만 가져옴
         }
 
         public void DisplayShopItemList(bool displayNumber)

@@ -14,6 +14,21 @@ namespace TextRPG.Scene
         public RestScene()
         {
             Name = "휴식";
+            Description = $"500 G 를 내면 체력을 회복할 수 있습니다.(보유 골드 : {GameManager.Player.Gold} G) ";
+
+            SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () => SceneManager.ChangeScene(SceneType.START)));
+            SelectMenus.Add(new Menu("💤 휴식하기", ConsoleColor.Yellow, () => GameManager.Instance.Rest()));
+        }
+
+        public override void InfoDisplay(ConsoleColor nameColor = ConsoleColor.DarkYellow, ConsoleColor descriptionColor = ConsoleColor.White)
+        {
+            Console.Clear();
+            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            GameManager.ColorWriteLine("💤 휴식", nameColor);
+            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            Console.WriteLine("휴식을 통해 체력을 회복할 수 있습니다.");
+            Console.WriteLine($"500 G 를 지불하고 체력을 회복하세요. {Description}");
+            Console.WriteLine();
         }
 
         public override void MainDisplay()
@@ -21,26 +36,6 @@ namespace TextRPG.Scene
             Console.WriteLine("[현재 체력]");
             GameManager.ColorWriteLine($"{GameManager.Player.HP} / {GameManager.Player.MaxHP}", ConsoleColor.Yellow);
             Console.WriteLine();
-            Console.WriteLine("1. 휴식하기");
-            Console.WriteLine("0. 나가기");
-        }
-
-        public override void SelectMenu(int selection)
-        {
-            switch (selection)
-            {
-                case 1:
-                    // 휴식 로직
-                    GameManager.Instance.Rest();
-                    break;
-                case 0:
-                    // 시작 씬으로 돌아가기
-                    SceneManager.Instance.ChangeScene(SceneType.START);
-                    break;
-                default:
-                    GameManager.DisplayWarning("잘못된 입력입니다. 주어진 선택지를 입력해주세요.");
-                    break;
-            }
         }
     }
 }

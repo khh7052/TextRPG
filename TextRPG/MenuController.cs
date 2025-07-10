@@ -9,16 +9,64 @@ namespace TextRPG
 {
     internal class MenuController
     {
-        public List<Menu> Menus
+        public List<Menu> ItemMenus
         {
-            get { return SceneManager.CurrentScene.Menus; }
+            get { return SceneManager.CurrentScene.ItemMenus; }
+        }
+
+        public List<Menu> SelectMenus
+        {
+            get { return SceneManager.CurrentScene.SelectMenus; }
         }
 
         private int _currentIndex; // 현재 선택된 메뉴 인덱스
 
+        public int MenuTotalCount
+        {
+            get { return ItemMenus.Count + SelectMenus.Count; } // 전체 메뉴 개수
+        }
+
+        public int CurrentIdx
+        {
+            get { return _currentIndex; }
+            set
+            {
+                _currentIndex = value;
+
+                // 인덱스가 범위를 벗어나지 않도록 조정
+                if (_currentIndex < 0)
+                {
+                    _currentIndex = MenuTotalCount - 1; // 음수 인덱스는 마지막 메뉴로 설정
+                }
+                else if (_currentIndex >= MenuTotalCount)
+                {
+                    _currentIndex = 0; // 범위를 초과하면 처음으로 설정
+                }
+            }
+        }
+
         public Menu CurrentMenu
         {
-            get { return Menus[_currentIndex]; }
+            get
+            {
+                // 0 ~ ItemMenus.Count - 1: 아이템 메뉴
+                if (0 <= CurrentIdx && CurrentIdx < ItemMenus.Count)
+                {
+                    return ItemMenus[CurrentIdx]; 
+                }
+                // ItemMenus.Count ~ SelectMenus.Count - 1: 선택 메뉴
+                else if(ItemMenus.Count <= CurrentIdx && CurrentIdx < ItemMenus.Count + SelectMenus.Count)
+                {
+                    return SelectMenus[CurrentIdx - ItemMenus.Count]; // 현재 선택된 아이템 메뉴 반환
+                }
+                else if (SelectMenus.Count <= CurrentIdx)
+                {
+                    if(SelectMenus.Count > 0)
+                        return SelectMenus[0]; // 현재 선택된 선택 메뉴 반환
+                }
+
+                return null;
+            }
         }
 
 
@@ -47,39 +95,34 @@ namespace TextRPG
 
         public void MoveUp()
         {
-            if (Menus.Count == 0) return; // 메뉴가 없으면 아무 동작도 하지 않음
+            if (MenuTotalCount == 0) return; // 메뉴가 없으면 아무 동작도 하지 않음
             CurrentMenu.isSelected = false;
-
-            GameManager.DisplayMessage("위로 이동"); // 현재 선택된 메뉴 이름 출력
-
-            _currentIndex--; // 위로 이동 (메뉴의 시작이 위에서부터 아래로 향할것이기 때문)
-            if (_currentIndex < 0) // 인덱스가 0보다 작아지면 마지막 메뉴로 이동
-                _currentIndex = Menus.Count - 1;
-
+            while (--CurrentIdx >= 0 && !CurrentMenu.Enable) ;
             CurrentMenu.isSelected = true;
         }
 
         public void MoveDown()
         {
-            if (Menus.Count == 0) return; // 메뉴가 없으면 아무 동작도 하지 않음
+            if (MenuTotalCount == 0) return; // 메뉴가 없으면 아무 동작도 하지 않음
             CurrentMenu.isSelected = false;
-            GameManager.DisplayMessage("아래로 이동"); // 현재 선택된 메뉴 이름 출력
-
-            _currentIndex++; // 아래로 이동
-            if (_currentIndex >= Menus.Count) // 인덱스가 메뉴의 개수를 초과하면 처음으로 이동
-                _currentIndex = 0;
-
+            while (++CurrentIdx < MenuTotalCount && !CurrentMenu.Enable) ;
             CurrentMenu.isSelected = true;
         }
 
-        public void AddMenu(Menu menu)
-        {
-            Menus.Add(menu); // 메뉴 목록에 새 메뉴 추가
-        }
 
         public void SelectMenu()
         {
+            for (int i = 0; i < ItemMenus.Count; i++)
+            {
+                ItemMenus[i].isSelected = false; // 모든 아이템 메뉴 선택 해제
+            }
+
+            for (int i = 0; i < SelectMenus.Count; i++)
+            {
+                SelectMenus[i].isSelected = false; // 모든 선택 메뉴 선택 해제
+            }
             CurrentMenu.Select(); // 현재 선택된 메뉴의 액션 실행
+            CurrentIdx = 0;
         }
 
     }

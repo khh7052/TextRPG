@@ -32,7 +32,7 @@ namespace TextRPG.Scene
             switch (selection)
             {
                 case 0:
-                    SceneManager.Instance.ChangeScene(SceneType.INVENTORY);
+                    SceneManager.ChangeScene(SceneType.INVENTORY);
                     break;
                 default:
                     if (selection < 1 || selection > ItemManager.Instance.items.Count)

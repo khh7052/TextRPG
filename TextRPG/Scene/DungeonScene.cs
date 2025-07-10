@@ -118,7 +118,7 @@ namespace TextRPG.Scene
 
             if (selection == 0)
             {
-                SceneManager.Instance.ChangeScene(SceneType.START); // 시작 씬으로 돌아가기
+                SceneManager.ChangeScene(SceneType.START); // 시작 씬으로 돌아가기
                 return;
             }
 

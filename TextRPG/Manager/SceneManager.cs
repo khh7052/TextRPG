@@ -35,7 +35,7 @@ namespace TextRPG.Manager
             }
         }
 
-        private Dictionary<SceneType, SceneBase> _scenes = new(); // 씬 목록
+        private static Dictionary<SceneType, SceneBase> _scenes = new(); // 씬 목록
 
         public static SceneBase CurrentScene { get; private set; } // 현재 씬
 
@@ -76,7 +76,7 @@ namespace TextRPG.Manager
             CurrentScene.Start();
         }
 
-        public void ChangeScene(SceneType sceneType)
+        public static void ChangeScene(SceneType sceneType)
         {
             if (_scenes.ContainsKey(sceneType))
             {
