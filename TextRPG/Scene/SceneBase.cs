@@ -14,6 +14,19 @@ namespace TextRPG.Scene
         public ConsoleColor NameColor = ConsoleColor.DarkYellow; // 씬 이름 색상
         public ConsoleColor DescriptionColor = ConsoleColor.White; // 씬 설명 색상
 
+        private List<Menu> _menus = new List<Menu>(); // 씬에서 사용할 메뉴 리스트
+        public List<Menu> Menus
+        {
+            get
+            {
+                return _menus;
+            }
+            set
+            {
+                _menus = value;
+            }
+        }
+
         public SceneBase() { 
             Name = "기본 씬";
             Description = "기본 씬 설명입니다.";
@@ -32,8 +45,9 @@ namespace TextRPG.Scene
         {
             Init();
             InfoDisplay();
-            MainDisplay();
-            SelectDisplay();
+            // MainDisplay();
+            MenuDisplay();
+            // SelectDisplay();
             End();
         }
 
@@ -49,16 +63,24 @@ namespace TextRPG.Scene
             Console.ForegroundColor = descriptionColor;
             Console.WriteLine(Description);
             Console.ResetColor();
-            Console.WriteLine("========================================");
         }
 
         // 메인 화면 출력
         public abstract void MainDisplay();
 
+        public void MenuDisplay()
+        {
+            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            foreach (var menu in _menus)
+            {
+                menu.Display();
+            }
+            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        }
+
         // 선택 UI 출력
         public virtual void SelectDisplay()
         {
-            Console.WriteLine("========================================");
             Console.Write("원하시는 행동을 선택해주세요: ");
         }
 

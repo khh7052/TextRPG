@@ -13,18 +13,39 @@ namespace TextRPG.Scene
         {
             Name = "던전 입구";
             Description = "던전 입구에 무사히 오신것을 환영합니다.\n이곳에서 던전으로 들어가기전 재정비를 할 수 있습니다.";
+
+            Menus.Add(new("1. 📊 상태 보기", ()=> SceneManager.Instance.ChangeScene(SceneType.STATUS)));
+            Menus.Add(new("2. 🎒 인벤토리", () => SceneManager.Instance.ChangeScene(SceneType.INVENTORY)));
+            Menus.Add(new("3. 🛒 상점", () => SceneManager.Instance.ChangeScene(SceneType.SHOP)));
+            Menus.Add(new("4. 🗡️ 던전 입장", () => SceneManager.Instance.ChangeScene(SceneType.DUNGEON)));
+            Menus.Add(new("5. 💤 휴식하기", () => SceneManager.Instance.ChangeScene(SceneType.REST)));
+            Menus.Add(new("6. 💾 저장하기 & 불러오기", () => SceneManager.Instance.ChangeScene(SceneType.SAVE)));
+            Menus.Add(new("0. ❌ 나가기", () => GameManager.ExitGame()));
+        }
+
+        public override void InfoDisplay(ConsoleColor nameColor = ConsoleColor.DarkYellow, ConsoleColor descriptionColor = ConsoleColor.White)
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            Console.WriteLine("📍 던전 입구");
+            Console.WriteLine("던전 입구에 무사히 오신 것을 환영합니다.");
+            Console.WriteLine("이곳에서 던전으로 들어가기 전 재정비를 할 수 있습니다.");
+            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            Console.ResetColor();
         }
 
         public override void MainDisplay()
         {
+            GameManager.ColorWriteLine("1. 📊 상태 보기", ConsoleColor.Cyan);
+            GameManager.ColorWriteLine("2. 🎒 인벤토리", ConsoleColor.Cyan);
+            GameManager.ColorWriteLine("3. 🛒 상점", ConsoleColor.Cyan);
+            GameManager.ColorWriteLine("4. 🗡️ 던전 입장", ConsoleColor.Red);
+            GameManager.ColorWriteLine("5. 💤 휴식하기", ConsoleColor.Yellow);
+            GameManager.ColorWriteLine("6. 💾 저장하기 & 불러오기", ConsoleColor.Yellow);
+
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("1. 상태 보기");
-            Console.WriteLine("2. 인벤토리");
-            Console.WriteLine("3. 상점");
-            GameManager.ColorWriteLine("4. 던전입장", ConsoleColor.Red);
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("5. 휴식하기");
-            Console.WriteLine("6. 저장하기 & 불러오기");
+            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             Console.ResetColor();
         }
 

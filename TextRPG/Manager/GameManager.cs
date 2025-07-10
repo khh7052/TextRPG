@@ -23,6 +23,8 @@ namespace TextRPG.Manager
         
         public static Character Player { get; set; }
 
+        private MenuController _menuController = new(); // 메뉴 컨트롤러 인스턴스
+
         public GameManager()
         {
             _instance = this;
@@ -31,6 +33,12 @@ namespace TextRPG.Manager
 
         public void Play()
         {
+            while (true)
+            {
+                SceneManager.Instance.PlayScene();
+                _menuController.Input();
+            }
+            /*
             int selection = 0;
             while (true)
             {
@@ -40,6 +48,7 @@ namespace TextRPG.Manager
                 } while (!ReadInt(out selection));
                 SceneManager.CurrentScene.SelectMenu(selection);
             }
+            */
         }
 
         public void Rest()
@@ -54,6 +63,11 @@ namespace TextRPG.Manager
             Player.HP = Player.MaxHP; // 체력 회복
 
             DisplayMessage("휴식을 취하여 체력이 회복되었습니다.");
+        }
+
+        public static void ExitGame()
+        {
+            Environment.Exit(0); // 프로그램 종료
         }
 
         public bool ReadInt(out int result)

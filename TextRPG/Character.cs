@@ -185,46 +185,27 @@ namespace TextRPG
             string atkItemStatus = Weapon != null ? $"(+{Weapon.EffectValue})" : "";
             string defItemStatus = Armor != null ? $"(+{Armor.EffectValue})" : "";
 
-            
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"Lv. {LV}");
-
+            // Console.WriteLine("════════════════════════════════════════");
+            Console.WriteLine($"🧙‍♂️ Lv. {LV}     📛 {Name} ({Class})");
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine($"경험치 : {Experience}/{MaxExperience} ( {Math.Round((float)Experience / MaxExperience * 100, 2)}% )");
-
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine($"이름: {Name} ( {Class} )");
-
+            Console.WriteLine($"📈 경험치 : {Experience}/{MaxExperience}  ({Math.Round((float)Experience / MaxExperience * 100, 2)}%)");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"체력: {HP}");
-
+            Console.WriteLine($"❤️ 체력     : {HP}");
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"공격력: {ATK} {atkItemStatus}");
-
+            Console.WriteLine($"🗡️ 공격력   : {ATK} {atkItemStatus}");
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"방어력: {DEF} {defItemStatus}");
-
+            Console.WriteLine($"🛡️ 방어력   : {DEF} {defItemStatus}");
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"골드: {Gold} G");
+            Console.WriteLine($"💰 골드     : {Gold} G");
+
             Console.ResetColor();
+            Console.WriteLine("════════════════════════════════════════");
 
-            if (Weapon != null)
-            {
-                Console.WriteLine($"무기: {Weapon.Name} (공격력 +{Weapon.EffectValue})");
-            }
-            else
-            {
-                Console.WriteLine("무기: 없음");
-            }
-
-            if (Armor != null)
-            {
-                Console.WriteLine($"방어구: {Armor.Name} (방어력 +{Armor.EffectValue})");
-            }
-            else
-            {
-                Console.WriteLine("방어구: 없음");
-            }
+            Console.WriteLine("🎒 장비");
+            Console.WriteLine($"   🗡️ 무기   : {(Weapon != null ? $"{Weapon.Name} (공격력 +{Weapon.EffectValue})" : "없음")}");
+            Console.WriteLine($"   🛡️ 방어구 : {(Armor != null ? $"{Armor.Name} (방어력 +{Armor.EffectValue})" : "없음")}");
         }
 
     }
