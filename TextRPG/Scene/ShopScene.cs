@@ -33,7 +33,7 @@ namespace TextRPG.Scene
 
             for (int i = 0; i < 10; i++)
             {
-                ItemMenus.Add(new ToggleItemMenu(null, ConsoleColor.Cyan));
+                ItemMenus.Add(new ToggleItemMenu(null, ConsoleColor.Cyan, null));
             }
         }
 
@@ -49,12 +49,34 @@ namespace TextRPG.Scene
                     Name = Shop.Name + " - 아이템 구매";
                     Description = "아이템을 구매할 수 있는 화면입니다.";
 
+                    for (int i = 0; i < ItemMenus.Count; i++)
+                    {
+                        ToggleItemMenu toggleItemMenu = ItemMenus[i] as ToggleItemMenu;
+                        if (toggleItemMenu != null)
+                        {
+                            toggleItemMenu.OnSelect = () => BuyMenu(toggleItemMenu.Item); // 구매 메소드 설정
+                        }
+                    }
                     break;
                 case ShopMenu.SELL:
                     Name = Shop.Name + " - 아이템 판매";
                     Description = "아이템을 판매할 수 있는 화면입니다.";
+
+                    for (int i = 0; i < ItemMenus.Count; i++)
+                    {
+                        ToggleItemMenu toggleItemMenu = ItemMenus[i] as ToggleItemMenu;
+                        if (toggleItemMenu != null)
+                        {
+                            toggleItemMenu.OnSelect = () => SellMenu(toggleItemMenu.Item); // 판매 메소드 설정
+                        }
+                    }
                     break;
             }
+        }
+
+        public override void Start()
+        {
+            UpdateItemMenu();
         }
 
         public override void InfoDisplay(ConsoleColor nameColor = ConsoleColor.DarkYellow, ConsoleColor descriptionColor = ConsoleColor.White)
@@ -67,20 +89,19 @@ namespace TextRPG.Scene
             Console.WriteLine();
         }
 
+        public override void MainDisplay()
+        {
+            Console.WriteLine("[보유 골드]");
+            GameManager.ColorWriteLine($"{GameManager.Player.Gold} G", ConsoleColor.Yellow);
+            Console.WriteLine();
+            ItemMenuDisplay();
+        }
 
         public override void ItemMenuDisplay()
         {
-            UpdateItemMenu();
             Console.WriteLine("───── 보유 장비 ─────");
-            for (int i = 3; i < ItemMenus.Count; i++)
-            {
-                ItemMenus[i].Display();
-            }
+            ItemMenuDisplayMethod();
             Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            for (int i = 0; i < 3; i++)
-            {
-                ItemMenus[i].Display();
-            }
         }
 
         void UpdateItemMenu()
@@ -108,68 +129,8 @@ namespace TextRPG.Scene
 
         }
 
-        public override void MainDisplay()
+        public void BuyMenu(Item item)
         {
-            Console.WriteLine("[보유 골드]");
-            GameManager.ColorWriteLine($"{GameManager.Player.Gold} G", ConsoleColor.Yellow);
-            Console.WriteLine();
-        }
-
-        public override void SelectMenu(int selection)
-        {
-            if (Menu == ShopMenu.LOBBY)
-            {
-                SelectMenu_Lobby(selection);
-            }
-            else if (Menu == ShopMenu.BUY)
-            {
-                SelectMenu_Buy(selection);
-            }
-            else if (Menu == ShopMenu.SELL)
-            {
-                SelectMenu_Sell(selection);
-            }
-        }
-
-        public void SelectMenu_Lobby(int selection)
-        {
-            switch (selection)
-            {
-                case 0:
-                    // 시작 씬으로 돌아가기
-                    SceneManager.ChangeScene(SceneType.START);
-                    break;
-                case 1:
-                    // 아이템 구매 씬으로 전환
-                    Menu = ShopMenu.BUY;
-                    break;
-                case 2:
-                    // 아이템 판매 씬으로 전환
-                    Menu = ShopMenu.SELL;
-                    break;
-                default:
-                    GameManager.DisplayWarning("잘못된 입력입니다. 주어진 선택지를 입력해주세요.");
-                    break;
-            }
-        }
-
-        public void SelectMenu_Buy(int selection)
-        {
-            if (selection == 0)
-            {
-                Menu = ShopMenu.LOBBY; // 로비로 돌아가기
-                return;
-            }
-
-            // 입력 확인
-            if (selection < 1 || selection > Shop.ShowItems.Count)
-            {
-                GameManager.DisplayWarning("잘못된 입력입니다. 주어진 선택지를 입력해주세요.");
-                return;
-            }
-
-            var item = Shop.ShowItems[selection - 1];
-
             // 똑같은 아이템이 있으면 경고
             if (GameManager.Player.HasItem(item))
             {
@@ -185,23 +146,8 @@ namespace TextRPG.Scene
                 GameManager.DisplayWarning("구매에 실패했습니다. 골드가 부족합니다.");
         }
 
-        public void SelectMenu_Sell(int selection)
+        public void SellMenu(Item item)
         {
-            if (selection == 0)
-            {
-                Menu = ShopMenu.LOBBY; // 로비로 돌아가기
-                return;
-            }
-
-            // 입력 확인
-            if (selection < 1 || selection > Shop.ShowItems.Count)
-            {
-                GameManager.DisplayWarning("잘못된 입력입니다. 주어진 선택지를 입력해주세요.");
-                return;
-            }
-
-            var item = Shop.ShowItems[selection - 1];
-
             // 구매 가능하면 구매
             if (Shop.SellItem(GameManager.Player, item))
                 GameManager.DisplayMessage($"{item.Name} 아이템을 판매했습니다. + {Shop.GetSellGold(item)} G");

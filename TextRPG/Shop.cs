@@ -49,6 +49,8 @@ namespace TextRPG
         // 상점에서 아이템 구매
         public bool BuyItem(Character character, Item item)
         {
+            if (character == null|| item == null) return false;
+
             if (character.Gold >= item.Price && Items.Contains(item))
             {
                 character.Gold -= item.Price;

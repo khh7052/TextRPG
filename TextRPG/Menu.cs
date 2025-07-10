@@ -15,6 +15,14 @@ namespace TextRPG
         public ConsoleColor Color { get; set; } = ConsoleColor.White; // 메뉴 출력 시 사용할 색상
         public bool Enable { get; set; } = true; // 메뉴 활성화 여부
 
+        public Menu() 
+        {
+            Content = "기본 메뉴"; // 기본 메뉴 내용 설정
+            Color = ConsoleColor.White; // 기본 색상은 흰색
+            OnSelect = null; // 기본 액션은 null
+            isSelected = false; // 초기 선택 상태는 false
+        }
+
 
         public Menu(string content, ConsoleColor color, Action onSelect = null)
         {
@@ -51,5 +59,6 @@ namespace TextRPG
 
             OnSelect?.Invoke(); // 메뉴 선택 시 등록된 액션 호출
         }
+
     }
 }
