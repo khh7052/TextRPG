@@ -33,7 +33,7 @@ namespace TextRPG.MenuCollections
             }
 
             // 메뉴 내용 출력
-            Content = $"📂 {SaveManager.GetSaveFileInfo(_saveFile.FilePath)}";
+            Content = $"📜 {SaveManager.GetSaveFileInfo(_saveFile.FilePath)}";
             string content = isSelected ? $"▶   {Content}" : Content;
             Console.WriteLine(content);
             Console.ResetColor(); // 색상 초기화

@@ -197,11 +197,11 @@ namespace TextRPG
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.ForegroundColor = ConsoleColor.Yellow;
             // Console.WriteLine("════════════════════════════════════════");
-            Console.WriteLine($"🧙‍♂️ Lv. {LV}     📛 {Name} ({Class})");
+            Console.WriteLine($"⚔️ Lv. {LV}     📛 {Name} ({Class})");
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine($"📈 경험치 : {Experience}/{MaxExperience}  ({Math.Round((float)Experience / MaxExperience * 100, 2)}%)");
+            Console.WriteLine($"✨ 경험치 : {Experience}/{MaxExperience}  ({Math.Round((float)Experience / MaxExperience * 100, 2)}%)");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"❤️ 체력     : {HP}");
+            Console.WriteLine($"🩸 체력     : {HP}");
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"🗡️ 공격력   : {ATK} {atkItemStatus}");
             Console.ForegroundColor = ConsoleColor.Blue;

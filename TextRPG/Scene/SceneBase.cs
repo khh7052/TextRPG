@@ -53,13 +53,13 @@ namespace TextRPG.Scene
         }
 
         // 씬 정보 출력 메서드
-        public virtual void InfoDisplay(ConsoleColor nameColor = ConsoleColor.DarkYellow, ConsoleColor descriptionColor = ConsoleColor.White)
+        public virtual void InfoDisplay()
         {
             Console.Clear();
             GameManager.DisplayLine();
-            GameManager.ColorWriteLine(Name, nameColor);
+            GameManager.ColorWriteLine(Name, NameColor);
             GameManager.DisplayLine(); 
-            GameManager.ColorWriteLine(Description, descriptionColor);
+            GameManager.ColorWriteLine(Description, DescriptionColor);
             GameManager.DisplayEnter(IntroSpaceCount);
         }
 
