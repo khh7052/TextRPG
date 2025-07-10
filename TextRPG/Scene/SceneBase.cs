@@ -15,26 +15,8 @@ namespace TextRPG.Scene
         public ConsoleColor NameColor = ConsoleColor.DarkYellow; // 씬 이름 색상
         public ConsoleColor DescriptionColor = ConsoleColor.White; // 씬 설명 색상
 
-        // private List<Menu> _itemMenus = new(); // 아이템 메뉴 리스트
-        // private List<Menu> _selectMenus = new(); // 선택 메뉴 리스트
-
         public List<Menu> ItemMenus { get; set; } = new(); // 아이템 메뉴 리스트
         public List<Menu> SelectMenus { get; set; } = new();
-
-
-        /*
-        public List<Menu> Menus
-        {
-            get
-            {
-                return _menus;
-            }
-            set
-            {
-                _menus = value;
-            }
-        }
-        */
 
         public SceneBase() { 
             Name = "기본 씬";
@@ -49,8 +31,15 @@ namespace TextRPG.Scene
             DescriptionColor = descriptionColor;
         }
 
+
+        // 씬 초기화 메서드
+        public virtual void Init() { }
+
+        // 씬 시작 전 초기화 메서드
+        public virtual void Start() { }
+
         // 씬 시작 메서드
-        public virtual void Start()
+        public virtual void Update()
         {
             Console.ResetColor();
             Init();
@@ -59,9 +48,6 @@ namespace TextRPG.Scene
             SelectMenuDisplay();
             End();
         }
-
-        // 씬 초기화 메서드
-        public virtual void Init() { }
 
         // 씬 정보 출력 메서드
         public virtual void InfoDisplay(ConsoleColor nameColor = ConsoleColor.DarkYellow, ConsoleColor descriptionColor = ConsoleColor.White)
@@ -72,20 +58,10 @@ namespace TextRPG.Scene
             Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             Console.WriteLine(Description);
             Console.WriteLine();
-            /*
-            Console.Clear();
-            Console.ForegroundColor = nameColor;
-            Console.WriteLine(Name);
-            Console.ForegroundColor = descriptionColor;
-            Console.WriteLine(Description);
-            Console.ResetColor();
-            */
         }
 
         // 메인 화면 출력
         public virtual void MainDisplay() { }
-
-
         public virtual void ItemMenuDisplay()
         {
             ItemMenuDisplayMethod();
@@ -119,7 +95,6 @@ namespace TextRPG.Scene
                 menu.Display();
             }
         }
-
 
         public virtual void SelectMenu(int selection) { }
 

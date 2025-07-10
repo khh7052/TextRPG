@@ -93,7 +93,6 @@ namespace TextRPG.Scene
             int count = 0;
             for (int i = 0; i < Shop.ShowItems.Count; i++)
             {
-                // GameManager.DisplayMessage($"아이템 {i + 1} / {Shop.ShowItems.Count} : {Shop.ShowItems[i].Name}");
                 for (int j = count; j < ItemMenus.Count; j++)
                 {
                     ToggleItemMenu toggleItemMenu = ItemMenus[j] as ToggleItemMenu;
@@ -101,7 +100,6 @@ namespace TextRPG.Scene
                     if (toggleItemMenu != null)
                     {
                         toggleItemMenu.Item = Shop.ShowItems[i]; // 아이템 설정
-                        // GameManager.DisplayMessage($"아이템 {i + 1} / {toggleItemMenu.Item} : {Shop.ShowItems[i].Name}");
                         count++;
                         break;
                     }

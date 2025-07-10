@@ -38,17 +38,6 @@ namespace TextRPG.Manager
                 SceneManager.Instance.PlayScene();
                 _menuController.Input();
             }
-            /*
-            int selection = 0;
-            while (true)
-            {
-                do
-                {
-                    SceneManager.Instance.PlayScene();
-                } while (!ReadInt(out selection));
-                SceneManager.CurrentScene.SelectMenu(selection);
-            }
-            */
         }
 
         public void Rest()

@@ -37,7 +37,7 @@ namespace TextRPG
             {
                 ItemType.WEAPON => "무기",
                 ItemType.ARMOR => "방어구",
-                _ => "???"
+                _ => "❓"
             };
         }
 
@@ -47,9 +47,20 @@ namespace TextRPG
             {
                 ItemType.WEAPON => "공격력",
                 ItemType.ARMOR => "방어력",
-                _ => "???"
+                _ => "❓"
             };
         }
+
+        public static string GetItemIcon(ItemType type)
+        {
+            return type switch
+            {
+                ItemType.WEAPON => "🗡️",
+                ItemType.ARMOR => "🛡️",
+                _ => "❓"
+            };
+        }
+
 
     }
 }

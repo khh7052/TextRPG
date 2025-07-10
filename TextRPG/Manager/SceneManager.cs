@@ -12,7 +12,6 @@ namespace TextRPG.Manager
         START,// 시작 화면
         STATUS, // 상태 화면
         INVENTORY, // 인벤토리 화면
-        INVENTORY_EQUIP, // 인벤토리 장비 화면
         SHOP, // 상점 화면
         DUNGEON, // 던전 화면
         REST, // 휴식 화면
@@ -46,7 +45,6 @@ namespace TextRPG.Manager
             AddScene(SceneType.START, new StartScene());
             AddScene(SceneType.STATUS, new StatusScene());
             AddScene(SceneType.INVENTORY, new InventoryScene());
-            AddScene(SceneType.INVENTORY_EQUIP, new InventoryEquipScene());
             AddScene(SceneType.SHOP, new ShopScene());
             AddScene(SceneType.DUNGEON, new DungeonScene());
             AddScene(SceneType.REST, new RestScene());
@@ -58,7 +56,7 @@ namespace TextRPG.Manager
         // 현재 씬 실행
         public void PlayScene()
         {
-            CurrentScene.Start();
+            CurrentScene.Update();
         }
 
         // 씬 추가
@@ -68,12 +66,6 @@ namespace TextRPG.Manager
             {
                 _scenes.Add(sceneType, scene);
             }
-        }
-
-        public void ChangeScene(SceneBase newScene)
-        {
-            CurrentScene = newScene;
-            CurrentScene.Start();
         }
 
         public static void ChangeScene(SceneType sceneType)

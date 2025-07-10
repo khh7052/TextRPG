@@ -65,6 +65,11 @@ namespace TextRPG
             Weapon = null; // 초기 무기 없음
             Armor = null; // 초기 방어구 없음
             Inventory = new List<Item>(); // 인벤토리 초기화
+
+
+            AddItem(ItemManager.Instance.items[0]); // 기본 아이템 추가
+            AddItem(ItemManager.Instance.items[1]); // 기본 아이템 추가
+            AddItem(ItemManager.Instance.items[2]); // 기본 아이템 추가
         }
 
         public Character(string name, ClassType classType)
@@ -99,6 +104,8 @@ namespace TextRPG
                     Gold = 40;
                     break;
             }
+
+            AddItem(ItemManager.Instance.items[0]); // 기본 아이템 추가
 
             HP = MaxHP; // 초기 체력 설정
         }

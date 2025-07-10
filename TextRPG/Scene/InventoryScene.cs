@@ -35,6 +35,11 @@ namespace TextRPG.Scene
             }
         }
 
+        public override void Start()
+        {
+            InitItemMenu(); // 아이템 메뉴 업데이트
+        }
+
         public override void InfoDisplay(ConsoleColor nameColor = ConsoleColor.DarkYellow, ConsoleColor descriptionColor = ConsoleColor.White)
         {
             Console.Clear();
@@ -53,61 +58,29 @@ namespace TextRPG.Scene
 
         public override void ItemMenuDisplay()
         {
-            UpdateItemMenu();
-
             Console.WriteLine("───── 보유 장비 ─────");
             ItemMenuDisplayMethod();
             Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            // Menus[0].Display(); // 마지막 메뉴는 돌아가기
         }
 
 
-
-        void UpdateItemMenu()
+        void InitItemMenu()
         {
             _showItems = ItemManager.Instance.GetItemRange(GameManager.Player.Inventory, 0, 10); // 예시로 10개 아이템만 가져옴
 
             if (_showItems == null || _showItems.Count == 0)
                 return;
 
-            for (int i = 1; i < ItemMenus.Count; i++)
+            for (int i = 0; i < _showItems.Count; i++)
             {
                 var item = _showItems[i];
-                ToggleItemMenu toggleItemMenu = ItemMenus[i] as ToggleItemMenu;
 
+                ToggleItemMenu toggleItemMenu = ItemMenus[i] as ToggleItemMenu;
                 if (toggleItemMenu != null)
                 {
                     toggleItemMenu.Item = item; // 아이템 설정
                 }
             }
-        }
-
-
-        void DisplayInventoryItemList()
-        {
-            if (_showItems == null || _showItems.Count == 0)
-            {
-                Console.WriteLine("아이템이 없습니다.");
-                return;
-            }
-
-            for (int i = 0; i < _showItems.Count; i++)
-            {
-                var item = _showItems[i];
-                Console.ForegroundColor = item.Type == ItemType.WEAPON ? ConsoleColor.Cyan : ConsoleColor.Green;
-                string itemInfo = GetEquipMenuItemInfo(item);
-
-                if (GameManager.Player.HasEquippedItem(item))
-                {
-                    Console.ForegroundColor = ConsoleColor.Yellow; // 이미 장착된 아이템은 노란색으로 표시
-                    Console.WriteLine($"[E] {i + 1}. {itemInfo}");
-                }
-                else
-                {
-                    Console.WriteLine($"{i + 1}. {itemInfo}");
-                }
-            }
-            Console.ResetColor();
         }
 
         string GetEquipMenuItemInfo(Item item)

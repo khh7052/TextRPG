@@ -34,11 +34,21 @@ namespace TextRPG
                 else
                 {
                     Console.BackgroundColor = ConsoleColor.Black; // 선택되지 않은 메뉴는 검은색 배경으로 표시
-                    Console.ForegroundColor = Color;
+
+                    if(Item == null)
+                        Console.ForegroundColor = Color; // 기본 색상 사용
+                    else
+                    {
+                        if (Item.Type == ItemType.WEAPON)
+                            Console.ForegroundColor = ConsoleColor.Cyan; // 무기는 청록색으로 표시
+                        else if (Item.Type == ItemType.ARMOR)
+                            Console.ForegroundColor = ConsoleColor.Green; // 방어구는 초록색으로 표시
+                    }
                 }
             }
 
             // 메뉴 내용 출력
+            Content = GetEquipMenuItemInfo(Item); // 메뉴 내용 설정
             string content = isSelected ? $"▶   {Content}" : Content;
             Console.WriteLine(content); // 메뉴 내용 출력
             Console.ResetColor(); // 색상 초기화
@@ -61,13 +71,27 @@ namespace TextRPG
                 GameManager.DisplayMessage($"{Item.Name} 아이템을 장착했습니다.");
             }
         }
+        public static string GetEquipMenuItemInfo(Item item)
+        {
+            if (item == null) return "                   ";
 
+            string icon = Item.GetItemIcon(item.Type);
+            string name = $"{icon} {item.Name}".PadRight(14);       // 이름 필드 (14칸)
+            string effect = $"{Item.GetItemTypeEffectText(item.Type)} +{item.EffectValue}".PadRight(14); // 효과 필드 (14칸)
+            string description = item.Description;
+
+            return $"{name}| {effect}| {description}";
+        }
+
+
+        /*
         public static string GetEquipMenuItemInfo(Item item)
         {
             if (item == null) return "               ";
 
             return $"{item.Name} | {Item.GetItemTypeEffectText(item.Type)} +{item.EffectValue} | {item.Description}";
         }
+        */
 
     }
 }
