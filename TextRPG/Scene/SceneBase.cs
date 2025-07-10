@@ -19,6 +19,8 @@ namespace TextRPG.Scene
         public List<Menu> ItemMenus { get; set; } = new(); // 아이템 메뉴 리스트
         public List<Menu> SelectMenus { get; set; } = new();
 
+        public int IntroSpaceCount { get; set; } = 1; // 씬 시작 시 공백 줄 수
+
         public SceneBase() { 
             Name = "기본 씬";
             Description = "기본 씬 설명입니다.";
@@ -54,11 +56,11 @@ namespace TextRPG.Scene
         public virtual void InfoDisplay(ConsoleColor nameColor = ConsoleColor.DarkYellow, ConsoleColor descriptionColor = ConsoleColor.White)
         {
             Console.Clear();
-            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            GameManager.DisplayLine();
             GameManager.ColorWriteLine(Name, nameColor);
-            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            Console.WriteLine(Description);
-            Console.WriteLine();
+            GameManager.DisplayLine(); 
+            GameManager.ColorWriteLine(Description, descriptionColor);
+            GameManager.DisplayEnter(IntroSpaceCount);
         }
 
         // 메인 화면 출력
@@ -68,7 +70,7 @@ namespace TextRPG.Scene
             ItemMenuDisplayMethod();
 
             if(ItemMenus.Count == 0) return;
-            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            GameManager.DisplayLine();
         }
 
         protected void ItemMenuDisplayMethod()
@@ -84,7 +86,7 @@ namespace TextRPG.Scene
         {
             // Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             SelectMenuDisplayMethod();
-            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            GameManager.DisplayLine();
         }
 
         // 선택 메뉴 처리 메서드

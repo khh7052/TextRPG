@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using TextRPG.Manager;
@@ -13,14 +14,13 @@ namespace TextRPG.Scene
     {
         public enum ShopMenuType
         {
-            LOBBY = 0, // 로비
             BUY = 1, // 아이템 구매
             SELL = 2, // 아이템 판매
         }
 
         public Shop Shop { get; set; } // 상점 인스턴스 생성
 
-        public ShopMenuType MenuType { get; set; } = ShopMenuType.LOBBY;
+        public ShopMenuType MenuType { get; set; } = ShopMenuType.BUY;
 
         public ShopScene()
         {
@@ -29,63 +29,33 @@ namespace TextRPG.Scene
             Name = Shop.Name;
             Description = Shop.Description;
              
-            SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () => SceneManager.ChangeScene(SceneType.START)));
             SelectMenus.Add(new Menu("🛒 아이템 구매", ConsoleColor.Cyan, () => MenuType = ShopMenuType.BUY));
             SelectMenus.Add(new Menu("💵 아이템 판매", ConsoleColor.Cyan, () => MenuType = ShopMenuType.SELL));
-             
-            UpdateItemMenu();
+            SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () => SceneManager.ChangeScene(SceneType.START)));
+
             for (int i = 0; i < 10; i++)
             {
-                Item item = Shop.ShowItems != null && i < Shop.ShowItems.Count ? Shop.ShowItems[i] : null;
-                ItemMenus.Add(new ShopMenu(Shop, item));
+                ShopMenu shopMenu = new ShopMenu(Shop, null);
+                shopMenu.MyScene = this;
+                ItemMenus.Add(shopMenu);
             }
         }
 
         public override void Init()
         {
+            UpdateItemMenu();
+
             switch (MenuType)
             {
-                case ShopMenuType.LOBBY:
-                    Name = Shop.Name;
-                    Description = Shop.Description;
-                    break;
                 case ShopMenuType.BUY:
                     Name = Shop.Name + " - 아이템 구매";
                     Description = "아이템을 구매할 수 있는 화면입니다.";
-
-                    for (int i = 0; i < ItemMenus.Count; i++)
-                    {
-                        ShopMenu shopMenu = ItemMenus[i] as ShopMenu;
-                        if (shopMenu != null)
-                        {
-                            shopMenu.OnSelect = () => shopMenu.Buy(); // 구매 메소드 설정
-                        }
-                    }
                     break;
                 case ShopMenuType.SELL:
                     Name = Shop.Name + " - 아이템 판매";
                     Description = "아이템을 판매할 수 있는 화면입니다.";
-
-                    for (int i = 0; i < ItemMenus.Count; i++)
-                    {
-                        ShopMenu shopMenu = ItemMenus[i] as ShopMenu;
-                        if (shopMenu != null)
-                        {
-                            shopMenu.OnSelect = () => shopMenu.Sell(); // 판매 메소드 설정
-                        }
-                    }
                     break;
             }
-        }
-
-        public override void InfoDisplay(ConsoleColor nameColor = ConsoleColor.DarkYellow, ConsoleColor descriptionColor = ConsoleColor.White)
-        {
-            Console.Clear();
-            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            GameManager.ColorWriteLine($"🛒 {Name}", nameColor);
-            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            Console.WriteLine(Description);
-            Console.WriteLine();
         }
 
         public override void MainDisplay()
@@ -98,33 +68,63 @@ namespace TextRPG.Scene
 
         public override void ItemMenuDisplay()
         {
-            Console.WriteLine("───── 보유 장비 ─────");
-            ItemMenuDisplayMethod();
-            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            if(MenuType == ShopMenuType.BUY)
+            {
+                Console.WriteLine("───── 구매할 장비 ─────");
+                ItemMenuDisplayMethod();
+            }
+            else if (MenuType == ShopMenuType.SELL)
+            {
+                Console.WriteLine("───── 판매할 장비 ─────");
+                ItemMenuDisplayMethod();
+            }
+
+            GameManager.DisplayLine();
         }
 
         void UpdateItemMenu()
         {
-            Shop.ShowItemsUpdate();
-
-            if (Shop.ShowItems == null || Shop.ShowItems.Count == 0)
-                return;
-
-            int count = 0;
-            for (int i = 0; i < Shop.ShowItems.Count; i++)
+            if(MenuType == ShopMenuType.BUY)
             {
-                for (int j = count; j < ItemMenus.Count; j++)
-                {
-                    ToggleItemMenu toggleItemMenu = ItemMenus[j] as ToggleItemMenu;
+                Shop.ShowItemsUpdate();
 
-                    if (toggleItemMenu != null)
+                if (Shop.ShowItems == null || Shop.ShowItems.Count == 0)
+                    return;
+
+                int index = 0;
+                foreach (var menu in ItemMenus)
+                {
+                    ShopMenu shopMenu = menu as ShopMenu;
+                    if (shopMenu == null) continue;
+                    shopMenu.Item = null;
+
+                    if (index < Shop.ShowItems.Count)
                     {
-                        toggleItemMenu.Item = Shop.ShowItems[i]; // 아이템 설정
-                        count++;
-                        break;
+                        shopMenu.Item = Shop.ShowItems[index];
+                        shopMenu.OnSelect = () => shopMenu.Buy(); // 구매 메소드 설정
+                        index++;
                     }
                 }
             }
+            else if (MenuType == ShopMenuType.SELL)
+            {
+                int index = 0;
+                foreach (var menu in ItemMenus)
+                {
+                    ShopMenu shopMenu = menu as ShopMenu;
+                    if (shopMenu == null) continue;
+                    shopMenu.Item = null;
+
+                    if (index < GameManager.Player.Inventory.Count)
+                    {
+                        shopMenu.Item = GameManager.Player.Inventory[index];
+                        shopMenu.OnSelect = () => shopMenu.Sell(); // 구매 메소드 설정
+                        index++;
+                    }
+                }
+
+            }
+
 
         }
 

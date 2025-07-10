@@ -21,10 +21,10 @@ namespace TextRPG.Scene
 
         public SaveScene()
         {
-            SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () => SceneManager.ChangeScene(SceneType.START)));
             SelectMenus.Add(new Menu("💾 저장", ConsoleColor.Cyan, () => Menu = SaveMenu.SAVE));
             SelectMenus.Add(new Menu("📂 불러오기", ConsoleColor.Cyan, () => Menu = SaveMenu.LOAD));
             SelectMenus.Add(new Menu("🗑️ 삭제", ConsoleColor.Cyan, () => Menu = SaveMenu.DELETE));
+            SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () => SceneManager.ChangeScene(SceneType.START)));
 
             for (int i = 0; i < SaveManager.Instance.SaveFileLength; i++)
             {
@@ -83,23 +83,12 @@ namespace TextRPG.Scene
             Menu = SaveMenu.SAVE;
         }
 
-        public override void InfoDisplay(ConsoleColor nameColor = ConsoleColor.DarkYellow, ConsoleColor descriptionColor = ConsoleColor.White)
-        {
-            Console.Clear();
-            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            GameManager.ColorWriteLine(Name, nameColor);
-            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            Console.WriteLine(Description);
-            Console.WriteLine();
-        }
-
-
         public override void MainDisplay()
         {
             Console.WriteLine("[파일 목록]");
             
             ItemMenuDisplayMethod();
-            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            GameManager.DisplayLine();
         }
     }
 }

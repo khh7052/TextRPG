@@ -4,14 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TextRPG.Manager;
+using TextRPG.Scene;
 
 namespace TextRPG.MenuCollections
 {
     internal class ShopMenu : Menu
     {
-        public Item Item { get; private set; }
+        public Item Item { get; set; }
 
         public Shop Shop { get; private set; } // 상점 정보
+
+        public ShopScene MyScene { get; set; }
 
         public ShopMenu(Shop shop, Item item)
         {
@@ -30,17 +33,44 @@ namespace TextRPG.MenuCollections
             }
             else
             {
+                if(MyScene.MenuType == ShopScene.ShopMenuType.BUY)
+                {
+                    if (GameManager.Player.HasItem(Item))
+                        Console.ForegroundColor = ConsoleColor.DarkGray; // 이미 보유한 아이템은 회색으로 표시
+                    else
+                        Console.ForegroundColor = Color;
+                }
+                else
+                {
+                    if (GameManager.Player.HasEquippedItem(Item))
+                        Console.ForegroundColor = ConsoleColor.Yellow; // 이미 장착된 아이템은 노란색으로 표시
+                    else
+                        Console.ForegroundColor = Color; // 기본 색상 사용
+                }
                 Console.BackgroundColor = ConsoleColor.Black; // 선택되지 않은 메뉴는 검은색 배경으로 표시
-                Console.ForegroundColor = Color;
             }
 
-            Content = GetItemInfo(Item);
+            Content = MyScene.MenuType == ShopScene.ShopMenuType.BUY ? GetBuyItemInfo(Item) : GetSellItemInfo(Item);
             string content = isSelected ? $"▶   {Content}" : Content;
             Console.WriteLine(content);
             Console.ResetColor(); // 색상 초기화
         }
 
-        public static string GetItemInfo(Item item)
+        public string GetBuyItemInfo(Item item)
+        {
+            if (item == null) return "                   ";
+
+            string icon = Item.GetItemIcon(item.Type);
+            string name = $"{icon} {item.Name}".PadRight(14);
+            string effect = $"{Item.GetItemTypeEffectText(item.Type)} +{item.EffectValue}".PadRight(14);
+            string description = item.Description.PadRight(14);
+            string gold = $"{item.Price} Gold".PadRight(14);
+
+            return $"{name}| {effect}| {description}| {gold}";
+        }
+
+
+        public string GetSellItemInfo(Item item)
         {
             if (item == null) return "                   ";
 
@@ -48,9 +78,12 @@ namespace TextRPG.MenuCollections
             string name = $"{icon} {item.Name}".PadRight(14);       // 이름 필드 (14칸)
             string effect = $"{Item.GetItemTypeEffectText(item.Type)} +{item.EffectValue}".PadRight(14); // 효과 필드 (14칸)
             string description = item.Description.PadRight(14);
-            string gold = $"{item.Price} Gold".PadRight(14); // 가격 필드 (14칸)
+            string gold = $"{Shop.GetSellGold(item)} Gold".PadRight(14); // 가격 필드 (14칸)
 
-            return $"{name}| {effect}| {description}| {gold}";
+            bool hasEquippedItem = GameManager.Player.HasEquippedItem(item);
+            string equippedStatus = hasEquippedItem ? "✅" : ""; // 장착 여부 표시
+
+            return $"{equippedStatus} {name}| {effect}| {description}| {gold}";
         }
 
         public void Buy()
@@ -74,6 +107,8 @@ namespace TextRPG.MenuCollections
 
         public void Sell()
         {
+            if (Item == null) return;
+
             // 구매 가능하면 구매
             if (Shop.SellItem(GameManager.Player, Item))
                 GameManager.DisplayMessage($"{Item.Name} 아이템을 판매했습니다. + {Shop.GetSellGold(Item)} G");

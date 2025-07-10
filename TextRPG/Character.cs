@@ -171,6 +171,8 @@ namespace TextRPG
 
         public bool HasEquippedItem(Item item)
         {
+            if (item == null) return false;
+
             if (item.Type == ItemType.WEAPON)
             {
                 return Weapon == item;

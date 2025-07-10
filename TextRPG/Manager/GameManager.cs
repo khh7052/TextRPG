@@ -101,5 +101,16 @@ namespace TextRPG.Manager
             Thread.Sleep(delay);
         }
 
+        public static void DisplayLine(ConsoleColor color = ConsoleColor.White)
+        {
+            Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        }
+
+        public static void DisplayEnter(int count)
+        {
+            for (int i = 0; i < count; i++)
+                Console.WriteLine();
+        }
+
     }
 }
