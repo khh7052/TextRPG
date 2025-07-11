@@ -42,6 +42,13 @@ namespace TextRPG.Manager
             }
         }
 
+        public static void GameOver()
+        {
+            DisplayWarning("게임 오버! 다시 시작합니다.");
+            Player = new Character(); // 플레이어 초기화
+            SceneManager.ChangeScene(SceneType.START); // 시작 씬으로 변경
+        }
+
         public void Rest()
         {
             if (Player.Gold < 500)
@@ -50,8 +57,14 @@ namespace TextRPG.Manager
                 return;
             }
 
+            if(Player.HP >= Player.MaxHP)
+            {
+                DisplayWarning("이미 체력이 가득 찼습니다.");
+                return;
+            }
+
             Player.Gold -= 500; // 골드 차감
-            Player.HP = Player.MaxHP; // 체력 회복
+            Player.HP += 100; // 체력 회복
 
             DisplayMessage("휴식을 취하여 체력이 회복되었습니다.");
         }

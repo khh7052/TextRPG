@@ -157,9 +157,11 @@ namespace TextRPG.Scene
             Character player = GameManager.Player;
             if (!_hasExploredDungeon)
             {
+                float penaltyHP = CurrentDungeon.GetDungeonPenalty_HP();
+
                 _exploredData = new ExploredData();
                 _exploredData.previousHP = player.HP; // 탐험 전 체력
-                _exploredData.currentHP = player.HP * 0.5f; // 탐험 후 체력 50% 감소
+                _exploredData.currentHP = player.HP * 0.5f - penaltyHP; // 탐험 후 체력 50% 감소 + 패널티 체력 감소
                 _exploredData.previousGold = player.Gold; // 탐험 전 골드
                 _exploredData.currentGold = player.Gold; // 탐험 후 골드
                 _exploredData.previousExperience = player.Experience; // 탐험 전 경험치

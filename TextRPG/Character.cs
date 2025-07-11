@@ -20,7 +20,23 @@ namespace TextRPG
         public string Name { get; set; }
         public int LV { get; set; } // 레벨
         public float MaxHP { get; set; } // 최대 체력
-        public float HP { get; set; } // 체력
+
+        private float _hp; // 현재 체력
+        public float HP
+        {
+            get { return _hp; }
+            set
+            {
+                _hp = Math.Clamp(value, 0, MaxHP); // 체력 범위 설정
+
+
+                // 체력이 0 이하가 되면 사망 처리
+                if (_hp <= 0) 
+                {
+                    GameManager.GameOver(); // 게임 오버 처리
+                }
+            }
+        }
         public float ATK { get; set; } // 공격력
         public float DEF { get; set; } // 방어력
         public int Gold { get; set; } // 골드
