@@ -14,6 +14,7 @@ namespace TextRPG.Scene
         public enum DungeonMenuType
         {
             LOBBY, // 로비
+            INFO, // 던전 정보
             CLEAR, // 던전 성공
             FAIL, // 던전 실패
         }
@@ -37,12 +38,12 @@ namespace TextRPG.Scene
             public int currentExperience; // 경험치
         }
 
-
         public DungeonScene()
         {
             Name = "⚔️ 던전";
             Description = "던전을 탐험하며 몬스터와 싸우고 보물을 찾을 수 있습니다.";
 
+            SelectMenus.Add(new Menu("🌀 입장하기", ConsoleColor.Cyan, () => ExploreDungeon(CurrentDungeon)));
 
             SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () =>
             {
@@ -75,6 +76,9 @@ namespace TextRPG.Scene
                     Console.WriteLine("🗺️ 던전 목록 🗺️");
                     ItemMenuDisplay();
                     break;
+                case DungeonMenuType.INFO:
+                    MainDisplay_Info();
+                    break;
                 case DungeonMenuType.CLEAR:
                     MainDisplay_Clear();
                     break;
@@ -86,6 +90,11 @@ namespace TextRPG.Scene
 
         public override void Init()
         {
+            foreach (var menu in ItemMenus)
+                menu.Enable = false;
+
+            SelectMenus[0].Enable = false; // 입장하기 비활성화
+
             switch (MenuType)
             {
                 case DungeonMenuType.LOBBY:
@@ -95,19 +104,18 @@ namespace TextRPG.Scene
                     foreach (var menu in ItemMenus)
                         menu.Enable = true;
                     break;
+                case DungeonMenuType.INFO:
+                    Name = $"⚔️ 던전 - {CurrentDungeon.Name}";
+                    Description = $"{CurrentDungeon.Description}";
+                    SelectMenus[0].Enable = true; // 입장하기 활성화
+                    break;
                 case DungeonMenuType.CLEAR:
                     Name = "⚔️ 던전 - 탐사 성공";
                     Description = $"{CurrentDungeon.Name} 탐사를 성공하였습니다.";
-
-                    foreach (var menu in ItemMenus)
-                        menu.Enable = false;
                     break;
                 case DungeonMenuType.FAIL:
                     Name = $"⚔️ 던전 - 탐사 실패";
                     Description = $"{CurrentDungeon.Name} 탐사를 실패하였습니다...";
-
-                    foreach (var menu in ItemMenus)
-                        menu.Enable = false;
                     break;
             }
         }
@@ -129,6 +137,12 @@ namespace TextRPG.Scene
                 MenuType = DungeonMenuType.CLEAR; // 성공
             }
         }
+
+        public void MainDisplay_Info()
+        {
+            GameManager.ColorWriteLine(CurrentDungeon.Paint, CurrentDungeon.PaintColor);
+        }
+
         public void MainDisplay_Clear()
         {
             Character player = GameManager.Player;

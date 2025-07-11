@@ -21,8 +21,15 @@ namespace TextRPG.MenuCollections
             {
                 if (Dungeon != null)
                 {
+                    MyScene.CurrentDungeon = Dungeon; // 현재 선택된 던전 설정
+                    MyScene.MenuType = DungeonMenuType.INFO; // 던전 탐험 메소드 호출
+                }
+                /*
+                if (Dungeon != null)
+                {
                     MyScene.ExploreDungeon(Dungeon); // 던전 탐험 메소드 호출
                 }
+                */
             };
         }
 
@@ -45,7 +52,7 @@ namespace TextRPG.MenuCollections
         {
             if (Dungeon == null) return "";
 
-            string info = $"-🏰 {Dungeon.Name} | (레벨: {Dungeon.Level} | 보상: {Dungeon.RewardGold} 골드 | 추천 방어력: {Dungeon.RecommendedDefense})";
+            string info = $"-{Dungeon.Icon} {Dungeon.Name} | (레벨: {Dungeon.Level} | 보상: {Dungeon.RewardGold} 골드 | 추천 방어력: {Dungeon.RecommendedDefense})";
             return info;
         }
     }
