@@ -64,6 +64,12 @@ namespace TextRPG
             {
                 MoveDown();
             }
+            else if (key == ConsoleKey.LeftArrow || key == ConsoleKey.A) // 왼쪽 화살표 키
+            {
+            }
+            else if (key == ConsoleKey.RightArrow || key == ConsoleKey.S) // 오른쪽 화살표 키
+            {
+            }
             else if (key == ConsoleKey.Enter) // Enter 키
             {
                 SelectMenu();
@@ -84,6 +90,14 @@ namespace TextRPG
             CurrentMenu.IsSelected = false;
             while (++CurrentIdx < MenuTotalCount && !CurrentMenu.Enable);
             CurrentMenu.IsSelected = true;
+        }
+
+        public void MoveLeft()
+        {
+        }
+
+        public void MoveRight()
+        {
         }
 
 

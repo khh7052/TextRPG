@@ -18,7 +18,6 @@ namespace TextRPG
         public string Description { get; set; } // 아이템 설명
         public int Price { get; set; } // 아이템 가격
         public int EffectValue { get; set; } // 아이템 효과 값 (예: 회복량, 공격력 증가 등)
-
         public ItemType Type { get; set; } // 아이템 타입
 
         public Item(string name, string description, int price, int effectValue, ItemType type)
@@ -28,6 +27,12 @@ namespace TextRPG
             Price = price;
             EffectValue = effectValue;
             Type = type;
+        }
+
+        // 복사 메서드
+        public Item Clone()
+        {
+            return new Item(Name, Description, Price, EffectValue, Type);
         }
 
 

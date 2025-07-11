@@ -28,14 +28,15 @@ namespace TextRPG.Scene
             Shop = new("상점", "아이템을 구매하거나 판매할 수 있는 곳입니다.");
             Name = Shop.Name;
             Description = Shop.Description;
-             
-            SelectMenus.Add(new Menu("🛒 아이템 구매", ConsoleColor.Cyan, () => MenuType = ShopMenuType.BUY));
+
+            SelectMenus.Add(new Menu("▶ 다음 페이지", ConsoleColor.Cyan, () => Shop.PageNumber++));
+            SelectMenus.Add(new Menu("◀ 이전 페이지", ConsoleColor.Cyan, () => Shop.PageNumber--));
             SelectMenus.Add(new Menu("💵 아이템 판매", ConsoleColor.Cyan, () => MenuType = ShopMenuType.SELL));
             SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () => SceneManager.ChangeScene(SceneType.START)));
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < Shop.PageSlotCount; i++)
             {
-                ShopMenu shopMenu = new ShopMenu(Shop, null);
+                ShopMenu shopMenu = new(Shop, null);
                 shopMenu.MyScene = this;
                 ItemMenus.Add(shopMenu);
             }
@@ -80,6 +81,7 @@ namespace TextRPG.Scene
             }
 
             GameManager.DisplayLine();
+            GameManager.ColorWriteLine($"현재 페이지: {Shop.PageNumber + 1}/{Shop.PageCount}", ConsoleColor.Yellow); // 현재 페이지 출력
         }
 
         void UpdateItemMenu()

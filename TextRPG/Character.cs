@@ -57,7 +57,7 @@ namespace TextRPG
             HP = MaxHP;
             ATK = 10;
             DEF = 5;
-            Gold = 1000;
+            Gold = 100;
 
             MaxExperience = 1; // 초기 최대 경험치 설정
             Experience = 0; // 초기 경험치 설정
@@ -65,11 +65,6 @@ namespace TextRPG
             Weapon = null; // 초기 무기 없음
             Armor = null; // 초기 방어구 없음
             Inventory = new List<Item>(); // 인벤토리 초기화
-
-
-            AddItem(ItemManager.Instance.items[0]); // 기본 아이템 추가
-            AddItem(ItemManager.Instance.items[1]); // 기본 아이템 추가
-            AddItem(ItemManager.Instance.items[2]); // 기본 아이템 추가
         }
 
         public Character(string name, ClassType classType)
@@ -104,8 +99,6 @@ namespace TextRPG
                     Gold = 40;
                     break;
             }
-
-            AddItem(ItemManager.Instance.items[0]); // 기본 아이템 추가
 
             HP = MaxHP; // 초기 체력 설정
         }
@@ -194,7 +187,6 @@ namespace TextRPG
             string atkItemStatus = Weapon != null ? $"(+{Weapon.EffectValue})" : "";
             string defItemStatus = Armor != null ? $"(+{Armor.EffectValue})" : "";
 
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.ForegroundColor = ConsoleColor.Yellow;
             // Console.WriteLine("════════════════════════════════════════");
             Console.WriteLine($"⚔️ Lv. {LV}     📛 {Name} ({Class})");
