@@ -146,24 +146,19 @@ namespace TextRPG.Manager
             double ratio = (double)current / max;
             int filled = (int)(length * ratio);
             int empty = length - filled;
+            float percent = (float)(ratio * 100);
 
-            ColorWrite(new string('█', filled), color);
-            ColorWrite(new string('░', empty), ConsoleColor.DarkGray);
-            Console.Write($"  ({current} / {max})\n");
+            // ▄ █ ░ ▬ ━
+            ColorWrite(new string('━', filled), color);
+            ColorWrite(new string('━', empty), ConsoleColor.DarkGray);
+            ColorWriteLine($"  ({current} / {max})", color);
         }
 
 
         public static void DrawBar(string content, float current, float max, ConsoleColor color = ConsoleColor.Red, int length = 20)
         {
-            double ratio = (double)current / max;
-            int filled = (int)(length * ratio);
-            int empty = length - filled;
-
             ColorWrite(content, color);
-            // ▄ █ ░ ▬ ━
-            ColorWrite(new string('━', filled), color);
-            ColorWrite(new string('━', empty), ConsoleColor.DarkGray);
-            Console.Write($"  ({current} / {max})\n");
+            DrawBar(current, max, color, length);
         }
 
     }

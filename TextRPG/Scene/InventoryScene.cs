@@ -23,7 +23,7 @@ namespace TextRPG.Scene
 
         public InventoryScene()
         {
-            Name = "🎒 𝕀𝕟𝕧𝕖𝕟𝕥𝕠𝕣𝕪 - 인벤토리";
+            Name = "🎒 𝕀𝕟𝕧𝕖𝕟𝕥𝕠𝕣𝕪 - 장착 관리";
             NameColor = ConsoleColor.Yellow;
             DescriptionColor = ConsoleColor.Gray;
 

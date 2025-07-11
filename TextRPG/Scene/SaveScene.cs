@@ -36,7 +36,7 @@ namespace TextRPG.Scene
             switch (Menu)
             {
                 case SaveMenu.SAVE:
-                    Name = "저장 화면 - 저장";
+                    Name = "💾 𝒮𝒶𝓋ℯ / 𝐿ℴ𝒶𝒹 𝑀ℯ𝓃𝓊 - 저장";
                     Description = "게임을 저장할 수 있는 화면입니다.";
 
                     for (int i = 0; i < ItemMenus.Count; i++)
@@ -49,7 +49,7 @@ namespace TextRPG.Scene
                     }
                     break;
                 case SaveMenu.LOAD:
-                    Name = "저장 화면 - 불러오기";
+                    Name = "💾 𝒮𝒶𝓋ℯ / 𝐿ℴ𝒶𝒹 𝑀ℯ𝓃𝓊 - 불러오기";
                     Description = "저장된 게임을 불러올 수 있는 화면입니다.";
 
                     for (int i = 0; i < ItemMenus.Count; i++)
@@ -62,7 +62,7 @@ namespace TextRPG.Scene
                     }
                     break;
                 case SaveMenu.DELETE:
-                    Name = "저장 화면 - 삭제";
+                    Name = "💾 𝒮𝒶𝓋ℯ / 𝐿ℴ𝒶𝒹 𝑀ℯ𝓃𝓊 - 삭제";
                     Description = "저장된 게임을 삭제할 수 있는 화면입니다.";
 
                     for (int i = 0; i < ItemMenus.Count; i++)
