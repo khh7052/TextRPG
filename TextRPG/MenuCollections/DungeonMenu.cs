@@ -30,12 +30,12 @@ namespace TextRPG.MenuCollections
         {
             if (!Enable) return;
 
-            Console.BackgroundColor = isSelected ? ConsoleColor.DarkGray : ConsoleColor.Black; // 선택된 메뉴는 어두운 회색 배경
-            Console.ForegroundColor = isSelected ? ConsoleColor.White : Color; // 메뉴 색상 설정
+            Console.BackgroundColor = IsSelected ? ConsoleColor.DarkGray : ConsoleColor.Black; // 선택된 메뉴는 어두운 회색 배경
+            Console.ForegroundColor = IsSelected ? ConsoleColor.White : Color; // 메뉴 색상 설정
 
             // 메뉴 내용 출력
             Content = GetDungeonInfo();
-            string content = isSelected ? $"▶   {Content}" : Content;
+            string content = IsSelected ? $"▶   {Content}" : Content;
             Console.WriteLine(content); // 메뉴 내용 출력
 
             Console.ResetColor(); // 색상 초기화

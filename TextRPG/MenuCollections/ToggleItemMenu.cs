@@ -20,7 +20,7 @@ namespace TextRPG.MenuCollections
 
         public override void Display()
         {
-            if (isSelected)
+            if (IsSelected)
             {
                 Console.BackgroundColor = ConsoleColor.DarkGray;
                 Console.ForegroundColor = ConsoleColor.White;
@@ -49,7 +49,7 @@ namespace TextRPG.MenuCollections
 
             // 메뉴 내용 출력
             Content = GetItemInfo(Item); // 메뉴 내용 설정
-            string content = isSelected ? $"▶   {Content}" : Content;
+            string content = IsSelected ? $"▶   {Content}" : Content;
             Console.WriteLine(content); // 메뉴 내용 출력
             Console.ResetColor(); // 색상 초기화
         }

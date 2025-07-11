@@ -80,6 +80,7 @@ namespace TextRPG.Scene
 
         public override void Start()
         {
+            base.Start();
             Menu = SaveMenu.SAVE;
         }
 

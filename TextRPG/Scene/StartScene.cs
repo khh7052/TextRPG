@@ -15,7 +15,7 @@ namespace TextRPG.Scene
             Name = "⚔️ 𝕋𝕒𝕝𝕖𝕤 𝕗𝕣𝕠𝕞 𝕥𝕙𝕖 𝔸𝕓𝕪𝕤𝕤 ⚔️ ";
             Description = """
                 던전으로 들어가는 길은 이곳밖에 없다.
-                준비를 맞치고 들어가자...
+                준비를 마치고 들어가자...
 
                 메뉴 이동 : W,S or ⬆, ⬇
                 메뉴 선택 : Enter

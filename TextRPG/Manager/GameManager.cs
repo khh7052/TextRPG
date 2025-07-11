@@ -33,6 +33,8 @@ namespace TextRPG.Manager
 
         public void Play()
         {
+            SceneManager.Instance.StartScene();
+
             while (true)
             {
                 SceneManager.Instance.PlayScene();

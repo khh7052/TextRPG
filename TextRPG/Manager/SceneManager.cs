@@ -38,6 +38,9 @@ namespace TextRPG.Manager
 
         public static SceneBase CurrentScene { get; private set; } // 현재 씬
 
+        public static Action<SceneBase> OnChangeScene { get; set; } // 씬 변경 이벤트
+
+
         public SceneManager()
         {
             _instance = this;
@@ -51,6 +54,11 @@ namespace TextRPG.Manager
             AddScene(SceneType.SAVE, new SaveScene());
 
             CurrentScene = _scenes[SceneType.START]; // 기본 씬 설정
+        }
+
+        public void StartScene()
+        {
+            CurrentScene.Start();
         }
 
         // 현재 씬 실행
@@ -74,6 +82,7 @@ namespace TextRPG.Manager
             {
                 CurrentScene = _scenes[sceneType];
                 CurrentScene.Start();
+                OnChangeScene?.Invoke(CurrentScene); // 씬 변경 이벤트 호출
             }
             else
             {

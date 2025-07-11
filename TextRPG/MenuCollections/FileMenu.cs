@@ -14,14 +14,14 @@ namespace TextRPG.MenuCollections
         public FileMenu(SaveFile saveFile, string content = "", ConsoleColor color = ConsoleColor.White, Action onSelect = null) : base(content, color, onSelect)
         {
             _saveFile = saveFile;
-            isSelected = false;
+            IsSelected = false;
         }
 
         public override void Display()
         {
             if (!Enable) return;
 
-            if (isSelected)
+            if (IsSelected)
             {
                 Console.BackgroundColor = ConsoleColor.DarkGray;
                 Console.ForegroundColor = ConsoleColor.White;
@@ -34,7 +34,7 @@ namespace TextRPG.MenuCollections
 
             // 메뉴 내용 출력
             Content = $"📜 {SaveManager.GetSaveFileInfo(_saveFile.FilePath)}";
-            string content = isSelected ? $"▶   {Content}" : Content;
+            string content = IsSelected ? $"▶   {Content}" : Content;
             Console.WriteLine(content);
             Console.ResetColor(); // 색상 초기화
         }

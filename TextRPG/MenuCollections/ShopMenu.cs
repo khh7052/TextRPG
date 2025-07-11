@@ -26,7 +26,7 @@ namespace TextRPG.MenuCollections
         {
             if (!Enable) return;
 
-            if (isSelected)
+            if (IsSelected)
             {
                 Console.BackgroundColor = ConsoleColor.DarkGray;
                 Console.ForegroundColor = ConsoleColor.White;
@@ -51,7 +51,7 @@ namespace TextRPG.MenuCollections
             }
 
             Content = MyScene.MenuType == ShopScene.ShopMenuType.BUY ? GetBuyItemInfo(Item) : GetSellItemInfo(Item);
-            string content = isSelected ? $"▶   {Content}" : Content;
+            string content = IsSelected ? $"▶   {Content}" : Content;
             Console.WriteLine(content);
             Console.ResetColor(); // 색상 초기화
         }

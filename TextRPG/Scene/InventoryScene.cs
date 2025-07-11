@@ -35,6 +35,7 @@ namespace TextRPG.Scene
 
         public override void Start()
         {
+            base.Start();
             InitItemMenu(); // 아이템 메뉴 업데이트
         }
 
