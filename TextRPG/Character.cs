@@ -202,22 +202,19 @@ namespace TextRPG
         {
             string atkItemStatus = Weapon != null ? $"(+{Weapon.EffectValue})" : "";
             string defItemStatus = Armor != null ? $"(+{Armor.EffectValue})" : "";
+            double experiencePercent = Math.Round((float)Experience / MaxExperience * 100, 2);
+            GameManager.ColorWriteLine($"⚔️ Lv. {LV}     📛 {Name} ({Class})", ConsoleColor.Yellow);
+            /*
+            GameManager.ColorWriteLine($"✨ 경험치 : {Experience}/{MaxExperience}  ({experiencePercent}%)", ConsoleColor.DarkYellow);
+            GameManager.ColorWriteLine($"🩸 체력     : {HP}", ConsoleColor.Green);
+            */
 
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            // Console.WriteLine("════════════════════════════════════════");
-            Console.WriteLine($"⚔️ Lv. {LV}     📛 {Name} ({Class})");
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine($"✨ 경험치 : {Experience}/{MaxExperience}  ({Math.Round((float)Experience / MaxExperience * 100, 2)}%)");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"🩸 체력     : {HP}");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"🗡️ 공격력   : {ATK} {atkItemStatus}");
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"🛡️ 방어력   : {DEF} {defItemStatus}");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"💰 골드     : {Gold} G");
+            GameManager.DrawBar("✨ 경험치   : ", Experience, MaxExperience, ConsoleColor.DarkYellow);
+            GameManager.DrawBar("🩸 체력     : ", HP, MaxHP, ConsoleColor.Green);
 
-            Console.ResetColor();
+            GameManager.ColorWriteLine($"🗡️ 공격력   : {ATK} {atkItemStatus}", ConsoleColor.Red);
+            GameManager.ColorWriteLine($"🛡️ 방어력   : {DEF} {defItemStatus}", ConsoleColor.Blue);
+            GameManager.ColorWriteLine($"💰 골드     : {Gold} G", ConsoleColor.Yellow);
             Console.WriteLine("════════════════════════════════════════");
 
             Console.WriteLine("🎒 장비");

@@ -1,134 +1,124 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Xml.Linq;
 using TextRPG.Manager;
 using TextRPG.MenuCollections;
+using TextRPG.Scene;
+using TextRPG;
 
-namespace TextRPG.Scene
+internal class ShopScene : SceneBase
 {
-    internal class ShopScene : SceneBase
+    public enum ShopMenuType
     {
-        public enum ShopMenuType
+        BUY = 1,
+        SELL = 2,
+    }
+
+    public Shop Shop { get; set; }
+    public ShopMenuType MenuType { get; set; } = ShopMenuType.BUY;
+
+    public ShopScene()
+    {
+        Shop = new("💰 𝕊𝕙𝕠𝕡 𝕠𝕗 𝔸𝕓𝕪𝕤𝕤", "고대 유적에서 살아남은 자들만 출입할 수 있는 심연의 상점.");
+        Name = Shop.Name;
+        Description = Shop.Description;
+
+        SelectMenus.Add(new Menu("▶ 다음 페이지", ConsoleColor.DarkCyan, () => Shop.PageNumber++));
+        SelectMenus.Add(new Menu("◀ 이전 페이지", ConsoleColor.DarkCyan, () => Shop.PageNumber--));
+        SelectMenus.Add(new Menu("💵 아이템 판매", ConsoleColor.Green, () => MenuType = ShopMenuType.SELL));
+        SelectMenus.Add(new Menu("🛒 아이템 구매", ConsoleColor.Yellow, () => MenuType = ShopMenuType.BUY));
+        SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () => SceneManager.ChangeScene(SceneType.START)));
+
+        for (int i = 0; i < Shop.PageSlotCount; i++)
         {
-            BUY = 1, // 아이템 구매
-            SELL = 2, // 아이템 판매
+            var shopMenu = new ShopMenu(Shop, null);
+            shopMenu.MyScene = this;
+            ItemMenus.Add(shopMenu);
+        }
+    }
+
+    public override void Init()
+    {
+        UpdateItemMenu();
+
+        switch (MenuType)
+        {
+            case ShopMenuType.BUY:
+                Name = $"{Shop.Name} - 아이템 구매";
+                Description = """
+                  살 거면 사고, 말 거면 나가. 구경만 하는 손님은 질색이니까.
+                """;
+                break;
+            case ShopMenuType.SELL:
+                Name = $"{Shop.Name} - 아이템 판매";
+                Description = """
+                   쓰지도 않을 거면 나한테 넘겨.
+                """;
+                break;
+        }
+    }
+
+    public override void MainDisplay()
+    {
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.WriteLine("\n💰━━━━━━━━━━💰 보유 골드 💰━━━━━━━━━━💰");
+        GameManager.ColorWriteLine($"{GameManager.Player.Gold} G", ConsoleColor.Yellow);
+        Console.ResetColor();
+        Console.WriteLine();
+
+        ItemMenuDisplay();
+    }
+
+    public override void ItemMenuDisplay()
+    {
+        Console.ForegroundColor = ConsoleColor.Gray;
+
+        if (MenuType == ShopMenuType.BUY)
+        {
+            Console.WriteLine("📦━━━━━━━━━━ 구매 가능한 장비 ━━━━━━━━━━📦\n");
+        }
+        else if (MenuType == ShopMenuType.SELL)
+        {
+            Console.WriteLine("📤━━━━━━━━━━ 판매 가능한 장비 ━━━━━━━━━━📤\n");
         }
 
-        public Shop Shop { get; set; } // 상점 인스턴스 생성
+        Console.ResetColor();
 
-        public ShopMenuType MenuType { get; set; } = ShopMenuType.BUY;
+        ItemMenuDisplayMethod();
 
-        public ShopScene()
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        GameManager.ColorWriteLine($"📄 현재 페이지: {Shop.PageNumber + 1} / {Shop.PageCount}", ConsoleColor.Cyan);
+    }
+
+    void UpdateItemMenu()
+    {
+        int index = 0;
+
+        foreach (var menu in ItemMenus)
         {
-            
-            Shop = new("상점", "아이템을 구매하거나 판매할 수 있는 곳입니다.");
-            Name = Shop.Name;
-            Description = Shop.Description;
+            if (menu is not ShopMenu shopMenu) continue;
+            shopMenu.Item = null;
 
-            SelectMenus.Add(new Menu("▶ 다음 페이지", ConsoleColor.Cyan, () => Shop.PageNumber++));
-            SelectMenus.Add(new Menu("◀ 이전 페이지", ConsoleColor.Cyan, () => Shop.PageNumber--));
-            SelectMenus.Add(new Menu("💵 아이템 판매", ConsoleColor.Cyan, () => MenuType = ShopMenuType.SELL));
-            SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () => SceneManager.ChangeScene(SceneType.START)));
-
-            for (int i = 0; i < Shop.PageSlotCount; i++)
-            {
-                ShopMenu shopMenu = new(Shop, null);
-                shopMenu.MyScene = this;
-                ItemMenus.Add(shopMenu);
-            }
-        }
-
-        public override void Init()
-        {
-            UpdateItemMenu();
-
-            switch (MenuType)
-            {
-                case ShopMenuType.BUY:
-                    Name = Shop.Name + " - 아이템 구매";
-                    Description = "아이템을 구매할 수 있는 화면입니다.";
-                    break;
-                case ShopMenuType.SELL:
-                    Name = Shop.Name + " - 아이템 판매";
-                    Description = "아이템을 판매할 수 있는 화면입니다.";
-                    break;
-            }
-        }
-
-        public override void MainDisplay()
-        {
-            Console.WriteLine("[보유 골드]");
-            GameManager.ColorWriteLine($"{GameManager.Player.Gold} G", ConsoleColor.Yellow);
-            Console.WriteLine();
-            ItemMenuDisplay();
-        }
-
-        public override void ItemMenuDisplay()
-        {
-            if(MenuType == ShopMenuType.BUY)
-            {
-                Console.WriteLine("───── 구매할 장비 ─────");
-                ItemMenuDisplayMethod();
-            }
-            else if (MenuType == ShopMenuType.SELL)
-            {
-                Console.WriteLine("───── 판매할 장비 ─────");
-                ItemMenuDisplayMethod();
-            }
-
-            GameManager.DisplayLine();
-            GameManager.ColorWriteLine($"현재 페이지: {Shop.PageNumber + 1}/{Shop.PageCount}", ConsoleColor.Yellow); // 현재 페이지 출력
-        }
-
-        void UpdateItemMenu()
-        {
-            if(MenuType == ShopMenuType.BUY)
+            if (MenuType == ShopMenuType.BUY)
             {
                 Shop.ShowItemsUpdate();
 
-                if (Shop.ShowItems == null || Shop.ShowItems.Count == 0)
-                    return;
-
-                int index = 0;
-                foreach (var menu in ItemMenus)
+                if (index < Shop.ShowItems.Count)
                 {
-                    ShopMenu shopMenu = menu as ShopMenu;
-                    if (shopMenu == null) continue;
-                    shopMenu.Item = null;
-
-                    if (index < Shop.ShowItems.Count)
-                    {
-                        shopMenu.Item = Shop.ShowItems[index];
-                        shopMenu.OnSelect = () => shopMenu.Buy(); // 구매 메소드 설정
-                        index++;
-                    }
+                    shopMenu.Item = Shop.ShowItems[index];
+                    shopMenu.OnSelect = () => shopMenu.Buy();
+                    index++;
                 }
             }
             else if (MenuType == ShopMenuType.SELL)
             {
-                int index = 0;
-                foreach (var menu in ItemMenus)
+                var inventory = GameManager.Player.Inventory;
+                if (index < inventory.Count)
                 {
-                    ShopMenu shopMenu = menu as ShopMenu;
-                    if (shopMenu == null) continue;
-                    shopMenu.Item = null;
-
-                    if (index < GameManager.Player.Inventory.Count)
-                    {
-                        shopMenu.Item = GameManager.Player.Inventory[index];
-                        shopMenu.OnSelect = () => shopMenu.Sell(); // 구매 메소드 설정
-                        index++;
-                    }
+                    shopMenu.Item = inventory[index];
+                    shopMenu.OnSelect = () => shopMenu.Sell();
+                    index++;
                 }
-
             }
-
-
         }
-
     }
 }

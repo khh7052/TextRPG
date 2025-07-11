@@ -41,7 +41,7 @@ namespace TextRPG
             }
         }
 
-        public int PageCount => (int)Math.Ceiling((float)Items.Count / PageSlotCount); // 페이지 개수 (10개씩 표시)
+        public int PageCount => Items.Count > 0 ? (int)Math.Ceiling((float)Items.Count / PageSlotCount) : 1; // 페이지 개수 (10개씩 표시)
 
 
         public Shop(string name, string description)
@@ -49,7 +49,7 @@ namespace TextRPG
             Name = name;
             Description = description;
             Items = new();
-            Items = ItemManager.Instance.GetAllItemClones(); // 모든 아이템을 가져옴
+            Items = ItemManager.Instance.GetAllItems(); // 모든 아이템을 가져옴
         }
 
         // 상점에 아이템 추가

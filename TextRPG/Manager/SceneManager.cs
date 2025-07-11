@@ -16,6 +16,7 @@ namespace TextRPG.Manager
         DUNGEON, // 던전 화면
         REST, // 휴식 화면
         SAVE, // 저장 화면
+        GAMEOVER // 게임 오버 화면
     }
 
     internal class SceneManager
@@ -52,6 +53,7 @@ namespace TextRPG.Manager
             AddScene(SceneType.DUNGEON, new DungeonScene());
             AddScene(SceneType.REST, new RestScene());
             AddScene(SceneType.SAVE, new SaveScene());
+            AddScene(SceneType.GAMEOVER, new GameOverScene());
 
             CurrentScene = _scenes[SceneType.START]; // 기본 씬 설정
         }

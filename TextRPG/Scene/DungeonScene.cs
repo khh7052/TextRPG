@@ -46,7 +46,7 @@ namespace TextRPG.Scene
 
             SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () =>
             {
-                if(MenuType == DungeonMenuType.LOBBY)
+                if (MenuType == DungeonMenuType.LOBBY)
                     SceneManager.ChangeScene(SceneType.START);
                 else
                     MenuType = DungeonMenuType.LOBBY; // 로비로 돌아가기
@@ -59,7 +59,12 @@ namespace TextRPG.Scene
                 DungeonMenu dungeonMenu = new DungeonMenu(this, dungeon);
                 ItemMenus.Add(dungeonMenu);
             }
+        }
 
+        public override void Start()
+        {
+            base.Start();
+            MenuType = DungeonMenuType.LOBBY;
         }
 
         public override void MainDisplay()
@@ -67,6 +72,7 @@ namespace TextRPG.Scene
             switch (MenuType)
             {
                 case DungeonMenuType.LOBBY:
+                    Console.WriteLine("🗺️ 던전 목록 🗺️");
                     ItemMenuDisplay();
                     break;
                 case DungeonMenuType.CLEAR:
@@ -123,35 +129,43 @@ namespace TextRPG.Scene
                 MenuType = DungeonMenuType.CLEAR; // 성공
             }
         }
-
         public void MainDisplay_Clear()
         {
             Character player = GameManager.Player;
             if (!_hasExploredDungeon)
             {
                 float penaltyHP = CurrentDungeon.GetDungeonPenalty_HP();
-                int reward = CurrentDungeon.GetDungeonPlusReward_Gold(); // 골드 보상 추가
+                int reward = CurrentDungeon.GetDungeonPlusReward_Gold();
 
                 _exploredData = new ExploredData();
-                _exploredData.previousHP = player.HP; // 탐험 전 체력
-                _exploredData.currentHP = player.HP - penaltyHP; // 탐험 후 체력
-                _exploredData.previousGold = player.Gold; // 탐험 전 골드
-                _exploredData.currentGold = player.Gold + reward; // 탐험 후 골드
-                _exploredData.previousExperience = player.Experience; // 탐험 전 경험치
-                _exploredData.currentExperience = player.Experience + 1; // 탐험 후 경험치 증가
+                _exploredData.previousHP = player.HP;
+                _exploredData.currentHP = player.HP - penaltyHP;
+                _exploredData.previousGold = player.Gold;
+                _exploredData.currentGold = player.Gold + reward;
+                _exploredData.previousExperience = player.Experience;
+                _exploredData.currentExperience = player.Experience + 1;
 
-                player.HP = (int)_exploredData.currentHP; // 체력 업데이트
-                player.Gold = _exploredData.currentGold; // 골드 업데이트
-                player.Experience = _exploredData.currentExperience; // 경험치 업데이트
+                player.HP = (int)_exploredData.currentHP;
+                player.Gold = _exploredData.currentGold;
+                player.Experience = _exploredData.currentExperience;
 
                 _hasExploredDungeon = true;
             }
 
-            Console.WriteLine("[탐험 결과]");
-            Console.WriteLine($"체력 {_exploredData.previousHP} -> {_exploredData.currentHP}");
-            Console.WriteLine($"Gold {_exploredData.previousGold} G -> {_exploredData.currentGold} G");
-        }
+            GameManager.ColorWriteLine("🎉 던전 탐험 성공! 🎉", ConsoleColor.Green);
+            Console.WriteLine(new string('-', 30));
 
+            Console.Write("체력 : ");
+            GameManager.ColorWriteLine($"{_exploredData.previousHP:F1} -> {_exploredData.currentHP:F1}", ConsoleColor.Red);
+
+            Console.Write("골드 : ");
+            GameManager.ColorWriteLine($"{_exploredData.previousGold} G -> {_exploredData.currentGold} G", ConsoleColor.Yellow);
+
+            Console.Write("경험치 : ");
+            GameManager.ColorWriteLine($"{_exploredData.previousExperience} -> {_exploredData.currentExperience}", ConsoleColor.Cyan);
+
+            Console.WriteLine(new string('-', 30));
+        }
         public void MainDisplay_Fail()
         {
             Character player = GameManager.Player;
@@ -160,19 +174,24 @@ namespace TextRPG.Scene
                 float penaltyHP = CurrentDungeon.GetDungeonPenalty_HP();
 
                 _exploredData = new ExploredData();
-                _exploredData.previousHP = player.HP; // 탐험 전 체력
-                _exploredData.currentHP = player.HP * 0.5f - penaltyHP; // 탐험 후 체력 50% 감소 + 패널티 체력 감소
-                _exploredData.previousGold = player.Gold; // 탐험 전 골드
-                _exploredData.currentGold = player.Gold; // 탐험 후 골드
-                _exploredData.previousExperience = player.Experience; // 탐험 전 경험치
-                _exploredData.currentExperience = player.Experience; // 탐험 후 경험치 증가
+                _exploredData.previousHP = player.HP;
+                _exploredData.currentHP = player.HP * 0.5f - penaltyHP;
+                _exploredData.previousGold = player.Gold;
+                _exploredData.currentGold = player.Gold;
+                _exploredData.previousExperience = player.Experience;
+                _exploredData.currentExperience = player.Experience;
 
                 _hasExploredDungeon = true;
             }
 
+            GameManager.ColorWriteLine("☠️ 던전 탐험 실패 ☠️", ConsoleColor.DarkRed);
+            Console.WriteLine(new string('-', 30));
 
-            Console.WriteLine("[탐험 결과]");
-            Console.WriteLine($"체력 {_exploredData.previousHP} -> {_exploredData.currentHP}");
+            Console.Write("체력 : ");
+            GameManager.ColorWriteLine($"{_exploredData.previousHP:F1} -> {_exploredData.currentHP:F1}\n", ConsoleColor.Red);
+
+            Console.WriteLine(new string('-', 30));
+
             player.HP = _exploredData.currentHP;
         }
     }

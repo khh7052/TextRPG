@@ -23,8 +23,16 @@ namespace TextRPG.Scene
 
         public InventoryScene()
         {
-            Name = "🎒 인벤토리";
-            Description = "아이템을 확인하고 필요한 장비를 관리하세요.";
+            Name = "🎒 𝕀𝕟𝕧𝕖𝕟𝕥𝕠𝕣𝕪 - 인벤토리";
+            NameColor = ConsoleColor.Yellow;
+            DescriptionColor = ConsoleColor.Gray;
+
+            Description = """
+            ╔═══════════════════════════════════════════════╗
+              당신이 획득한 장비들을 확인할 수 있습니다.
+              장착 상태나 효과를 확인하고 전략을 세우세요.
+            ╚═══════════════════════════════════════════════╝
+            """;
 
             SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () => SceneManager.ChangeScene(SceneType.START)));
             for (int i = 0; i < 10; i++)
@@ -47,7 +55,8 @@ namespace TextRPG.Scene
 
         public override void ItemMenuDisplay()
         {
-            Console.WriteLine("───── 보유 장비 ─────");
+            Console.WriteLine();
+            GameManager.ColorWriteLine("📦━━━━━━━━━━━━━━━📦 보유 장비 📦━━━━━━━━━━━━━━━📦", ConsoleColor.DarkGray);
             ItemMenuDisplayMethod();
             GameManager.DisplayLine();
         }

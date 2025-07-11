@@ -39,14 +39,5 @@ namespace TextRPG.Manager
             Dungeons.Add(new Dungeon("용의 둥지", "용이 서식하는 위험한 지역입니다.", 4, 5000, new List<string> { "용", "드래곤" }, 20));
             Dungeons.Add(new Dungeon("마법사의 탑", "강력한 마법사가 지배하는 탑입니다.", 5, 7000, new List<string> { "마법사", "고블린 마법사" }, 25));
         }
-
-        public void DisplayDungeonList()
-        {
-            for (int i = 0; i < Dungeons.Count; i++)
-            {
-                var dungeon = Dungeons[i];
-                Console.WriteLine($"{i + 1}. {dungeon.Name} - {dungeon.Description} (레벨: {dungeon.Level}, 보상: {dungeon.RewardGold} 골드) | 방어력 {dungeon.RecommendedDefense} 이상 권장");
-            }
-        }
     }
 }

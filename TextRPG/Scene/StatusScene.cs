@@ -1,32 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TextRPG.Manager;
+﻿using TextRPG.Manager;
 using TextRPG.MenuCollections;
+using TextRPG.Scene;
 
-namespace TextRPG.Scene
+internal class StatusScene : SceneBase
 {
-    internal class StatusScene : SceneBase
+    public StatusScene()
     {
-        public StatusScene()
-        {
-            Name = "ℹ️  상태 보기";
-            Description = "던전에 들어가기 전 캐릭터의 상태를 점검하세요.";
+        Name = "📜 𝕊𝕥𝕒𝕥𝕦𝕤 ─ 상태 보기";
+        NameColor = ConsoleColor.Yellow;
+        DescriptionColor = ConsoleColor.Gray;
 
-            SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () => SceneManager.ChangeScene(SceneType.START)));
-        }
+        Description = """
+            ╔═══════════════════════════════════════════════╗
+              던전에 들어가기 전, 당신의 상태를 점검하세요.
+              현재 능력치는 살아남기 위한 유일한 무기입니다.
+            ╚═══════════════════════════════════════════════╝
+            """;
 
+        SelectMenus.Add(new Menu("↩ 돌아가기", ConsoleColor.Cyan, () => SceneManager.ChangeScene(SceneType.START)));
+    }
 
-        public override void MainDisplay()
-        {
-            // 플레이어 상태 출력 전에 구분선 추가
-            Console.WriteLine("───── 플레이어 상태 ─────");
-            GameManager.Player.DisplayStatus();
-            Console.WriteLine("──────────────────────────");
-            Console.WriteLine();
-        }
+    public override void MainDisplay()
+    {
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.WriteLine("\n✦━━━━━━━━━━━━━━━✦ 플레이어 상태 ✦━━━━━━━━━━━━━━━✦\n");
 
+        Console.ResetColor();
+        GameManager.Player.DisplayStatus(); // 캐릭터 상태 출력
+
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.WriteLine("\n✦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━✦\n");
+        Console.ResetColor();
     }
 }

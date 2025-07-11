@@ -44,9 +44,16 @@ namespace TextRPG.Manager
 
         public static void GameOver()
         {
-            DisplayWarning("게임 오버! 다시 시작합니다.");
+            DisplayWarning("눈 앞이 어두워진다...");
+            SceneManager.ChangeScene(SceneType.GAMEOVER); // 시작 씬으로 변경
+            SceneManager.Instance.PlayScene();
+        }
+
+        public static void Restart()
+        {
             Player = new Character(); // 플레이어 초기화
             SceneManager.ChangeScene(SceneType.START); // 시작 씬으로 변경
+            SceneManager.Instance.PlayScene();
         }
 
         public void Rest()
@@ -91,6 +98,13 @@ namespace TextRPG.Manager
             return isValid;
         }
 
+        public static void ColorWrite(string content, ConsoleColor color = ConsoleColor.White)
+        {
+            Console.ForegroundColor = color;
+            Console.Write(content);
+            Console.ResetColor();
+        }
+
         public static void ColorWriteLine(string content, ConsoleColor color = ConsoleColor.White)
         {
             Console.ForegroundColor = color;
@@ -125,6 +139,31 @@ namespace TextRPG.Manager
         {
             for (int i = 0; i < count; i++)
                 Console.WriteLine();
+        }
+
+        public static void DrawBar(float current, float max, ConsoleColor color = ConsoleColor.Red, int length = 20)
+        {
+            double ratio = (double)current / max;
+            int filled = (int)(length * ratio);
+            int empty = length - filled;
+
+            ColorWrite(new string('█', filled), color);
+            ColorWrite(new string('░', empty), ConsoleColor.DarkGray);
+            Console.Write($"  ({current} / {max})\n");
+        }
+
+
+        public static void DrawBar(string content, float current, float max, ConsoleColor color = ConsoleColor.Red, int length = 20)
+        {
+            double ratio = (double)current / max;
+            int filled = (int)(length * ratio);
+            int empty = length - filled;
+
+            ColorWrite(content, color);
+            // ▄ █ ░ ▬ ━
+            ColorWrite(new string('━', filled), color);
+            ColorWrite(new string('━', empty), ConsoleColor.DarkGray);
+            Console.Write($"  ({current} / {max})\n");
         }
 
     }
